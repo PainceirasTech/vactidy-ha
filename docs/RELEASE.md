@@ -1,23 +1,30 @@
-# v0.1.0 — primera versión
+# v0.1.1
 
 Integración local para robots aspiradores Vactidy basados en Tuya 3.3, probada sobre un
 **Cleanova W15**.
 
-## Incluye
+Esta versión no añade funciones nuevas: corrige todo lo que impedía publicar la integración
+en el catálogo de Home Assistant y actualiza la documentación.
 
-- Entidad `vacuum` completa: iniciar, pausar, detener, volver a la base, localizar y
-  cambiar la potencia de succión.
-- 12 sensores, 5 binarios, 2 selectores, 2 interruptores y 6 botones.
-- **Descubrimiento automático**: la integración localiza el robot en la red local y
-  rellena la IP y el identificador; solo hay que aportar la clave local.
-- **Alta con Tuya Cloud**: si prefieres no buscar la clave, se pide a la API con las
-  credenciales de un proyecto de desarrollador. No se almacenan.
-- Diagnóstico descargable desde la entrada, sin exponer la clave.
+## Correcciones
 
-## Instalación
+- **Imágenes de marca**: se añaden `brand/icon.png` y `brand/logo.png`, que el catálogo
+  exige para mostrar la integración.
+- **Manifiesto**: se retira `requirements: cryptography`, porque ya es dependencia del
+  propio Home Assistant y declararla puede provocar conflictos de versión.
+- **Traducciones**: la potencia de succión se declara ahora con la estructura que valida
+  Home Assistant (`entity.vacuum.vacuum.state_attributes.fan_speed.state`), y la entidad
+  declara su `translation_key`.
+- **Validación continua**: los flujos de trabajo solo se ejecutan en `push` a `main`,
+  `pull_request` y una vez al día, en lugar de dos veces por cada commit.
 
-HACS → menú de tres puntos → **Repositorios personalizados** →
-`https://github.com/PainceirasTech/vactidy-ha` con categoría **Integration**.
+## Documentación
+
+- Los tres README (español, inglés y gallego) explican el **Marketplace** como vía
+  principal, disponible de serie desde Home Assistant 2026.11, y reservan el nombre HACS
+  para versiones anteriores.
+- Guía paso a paso pensada para quien nunca ha instalado una integración: sin terminal,
+  sin conocimientos previos, con una tabla de problemas frecuentes.
 
 ## Requisitos
 
