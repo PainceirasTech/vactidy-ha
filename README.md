@@ -1,8 +1,8 @@
 # Vactidy para Home Assistant
 
 Integración local para robots aspiradores **Vactidy** (y modelos compatibles basados en Tuya)
-que hablan el protocolo LAN de Tuya 3.3. Sin nube, sin cuenta, sin dependencias del
-fabricante: Home Assistant se conecta directamente al robot por TCP en el puerto 6668.
+que hablan el protocolo LAN de Tuya 3.3. Sin nube, sin cuenta y sin depender del fabricante:
+Home Assistant se conecta directamente al robot por tu red wifi.
 
 [English](README.en.md) · [Galego](README.gl.md)
 
@@ -12,70 +12,175 @@ fabricante: Home Assistant se conecta directamente al robot por TCP en el puerto
 
 ---
 
-## Qué aporta
+## Qué vas a conseguir
 
-- Entidad `vacuum` completa: iniciar, pausar, detener, volver a la base, localizar y
-  cambiar la potencia de succión.
-- 12 sensores: batería, superficie y tiempo de la limpieza actual, acumulados,
-  vida útil de cepillos, sensores y mopa, y código de avería traducido.
-- 5 sensores binarios: cargando, en la base, problema, no molestar y mopa instalada.
-- 2 selectores: caudal de agua de la mopa y modo de limpieza (barrer / fregar / ambas).
-- 2 interruptores: modo no molestar y luz del panel.
-- 6 botones: localizar, vaciar depósito y reiniciar los cuatro contadores de mantenimiento.
-- Diagnóstico descargable desde la propia entrada, sin exponer la clave local.
+Un robot integrado en Home Assistant con:
 
-## Requisitos
+- **Entidad `vacuum`**: iniciar, pausar, detener, volver a la base, localizar y cambiar la
+  potencia de succión.
+- **12 sensores**: batería, superficie y tiempo de la limpieza, acumulados, vida útil de
+  cepillos, sensores y mopa, y el código de avería traducido.
+- **5 sensores binarios**: cargando, en la base, problema, no molestar y mopa instalada.
+- **2 selectores**: caudal de agua de la mopa y modo de limpieza (barrer / fregar / ambas).
+- **2 interruptores**: modo no molestar y luz del panel.
+- **6 botones**: localizar, vaciar el depósito y reiniciar los contadores de mantenimiento.
 
-- Home Assistant 2024.11 o superior.
-- El robot y Home Assistant en la misma red local.
-- La **clave local** del dispositivo: 16 caracteres que el fabricante asigna al vincular el
-  robot y que no caducan. Es el único dato que hace falta, y la integración puede pedírsela
-  sola a Tuya si le das credenciales de desarrollador.
+Todo funciona en local: si se cae internet, el robot sigue respondiendo.
 
-  Esa clave es un secreto de fábrica: no se deriva del identificador ni viaja por la red
-  local, así que ningún programa puede adivinarla. Lo que sí se puede evitar es el trabajo
-  manual de buscarla, y para eso están las dos vías del apartado siguiente.
+## Antes de empezar
 
-## Instalación
+Necesitas cuatro cosas:
 
-### HACS (recomendado)
+1. Home Assistant **2024.11 o superior**.
+2. **HACS** instalado. Si no lo tienes, el paso 1 lo explica.
+3. El robot **encendido y conectado a la misma red** que Home Assistant.
+4. Diez minutos y la **clave local** del robot. Si no la tienes, el paso 5 explica cómo
+   conseguirla sin usar la terminal.
 
-1. HACS → Integraciones → menú de tres puntos → **Repositorios personalizados**.
-2. Añade `https://github.com/PainceirasTech/vactidy-ha` con categoría **Integration**.
-3. Busca **Vactidy**, instala y reinicia Home Assistant.
+---
 
-### Manual
+## Paso 1 · Instalar HACS (si todavía no lo tienes)
 
-Copia la carpeta `custom_components/vactidy` dentro de `config/custom_components/` de tu
-instalación de Home Assistant y reinicia.
+Si en la barra lateral ya ves **HACS**, salta al paso 2.
 
-## Configuración
+1. Instala el add-on **Terminal & SSH** desde *Ajustes → Complementos → Tienda de
+   complementos*, o entra por SSH a tu instalación.
+2. Ejecuta:
 
-1. Ajustes → Dispositivos y servicios → **Añadir integración** → *Vactidy*.
-2. La integración busca el robot en la red local y **rellena sola la IP y el identificador**.
-   Después elige una de las dos vías:
+   ```bash
+   wget -O - https://get.hacs.xyz | bash -
+   ```
 
-   - **Ya tengo la clave local**: pégala y ponle nombre al robot. Es todo.
-   - **Obtenerla de Tuya Cloud**: introduce el *Access ID* y el *Access Secret* de un
-     proyecto gratuito de <https://iot.tuya.com> con tu cuenta de la app Tuya vinculada
-     (*Devices → Link Tuya App account*). La integración pide la clave a Tuya, rellena el
-     formulario y guarda la entrada. Las credenciales no se almacenan: solo se usan en ese
-     momento.
+3. Reinicia Home Assistant.
+4. Ve a *Ajustes → Dispositivos y servicios → Añadir integración* y busca **HACS**.
+   Acéptalo todo y, cuando te pida autorizar en GitHub, introduce el código que te muestra.
+5. HACS aparece ya en la barra lateral.
 
-3. Pulsa **Enviar**. Se abre una conexión de prueba con el robot y, si responde, la entrada
-   queda creada.
+> En algunas versiones el menú se llama **Marketplace**. Es el mismo sitio.
 
-Si el descubrimiento no encuentra el robot (porque está en otra subred o el router bloquea
-la difusión), los dos campos aparecen vacíos y puedes escribirlos a mano. El identificador
-está en la app Tuya, en *Ajustes del dispositivo → Información del dispositivo*.
+## Paso 2 · Añadir este repositorio a HACS
 
-La integración valida la conexión antes de guardar: si la clave es incorrecta verás
-**«La clave local ha sido rechazada»**, si la IP no responde **«No se puede alcanzar el
-robot»** y si el aparato contesta pero no es de esta familia, **«El dispositivo respondió,
-pero no informa los puntos de datos esperados»**. Si más adelante cambia la IP o rotas la
-clave, usa **Reconfigurar** en la entrada; no hace falta borrarla.
+1. Abre **HACS** en la barra lateral.
+2. Entra en **Integraciones**.
+3. Arriba a la derecha, menú de tres puntos → **Repositorios personalizados**
+   (*Custom repositories*).
+4. Pega la dirección y elige la categoría:
 
-## Entidades
+   | Campo | Valor |
+   | --- | --- |
+   | Repositorio | `https://github.com/PainceirasTech/vactidy-ha` |
+   | Categoría | **Integration** |
+
+5. Pulsa **Añadir**.
+
+## Paso 3 · Instalar la integración
+
+1. Sigue en **HACS → Integraciones**.
+2. Busca **Vactidy**.
+3. Ábrelo y pulsa **Descargar** (*Download*).
+4. Cuando termine, **reinicia Home Assistant** desde *Ajustes → Sistema → Reiniciar*.
+
+El reinicio no es opcional: hasta que no reinicies, Home Assistant no ve la integración.
+
+## Paso 4 · Añadir la integración
+
+1. Ve a *Ajustes → Dispositivos y servicios*.
+2. Pulsa **Añadir integración** (abajo a la derecha).
+3. Busca **Vactidy** y ábrelo.
+4. Aparece un menú con dos opciones:
+
+   ```
+   ¿Cómo quieres configurar el robot?
+     ▸ Ya tengo la clave local
+     ▸ Obtenerla de Tuya Cloud
+   ```
+
+   Elige la que corresponda a tu caso. La segunda es la fácil si nunca has oído hablar de
+   una «clave local».
+
+La integración busca el robot en tu red mientras muestras ese menú. Si lo encuentra, verás
+su IP y su identificador en el texto de arriba; si no, no pasa nada, se escriben a mano.
+
+## Paso 5 · Conseguir la clave local
+
+La **clave local** es un texto de 16 caracteres que el robot usa para cifrar la
+comunicación. La asigna el fabricante y no cambia nunca. Hay dos maneras de obtenerla.
+
+### Opción A · Pedírsela a Tuya (recomendado, sin terminal)
+
+Solo hace falta una cuenta gratuita de desarrollador y vincular la app del móvil.
+
+1. Entra en <https://iot.tuya.com> y crea una cuenta (es gratis; no hace falta tarjeta).
+2. En el menú lateral, **Cloud → Development**, y pulsa **Create Cloud Project**.
+   - Nombre: el que quieras.
+   - *Industry*: Smart Home.
+   - *Development Method*: Smart Home.
+   - *Data Center*: **Central Europe** si estás en España.
+3. Abre el proyecto recién creado y apunta el **Access ID** y el **Access Secret** de la
+   pestaña *Overview*. Son las credenciales que te pedirá la integración.
+4. En el menú del proyecto, **Devices → Link Tuya App account → Add App Account**.
+   Aparece un código QR.
+5. En el móvil, abre la app **Tuya Smart** o **Smart Life** (la que uses con el robot) →
+   pestaña *Yo* → icono de escaneo (arriba a la derecha) → escanea el QR → confirma.
+6. Vuelve a **Devices**: tu robot aparece en la lista. Ya está vinculado.
+
+Ahora, en Home Assistant:
+
+1. Elige **Obtenerla de Tuya Cloud** en el menú de la integración.
+2. Rellena:
+
+   | Campo | Qué poner |
+   | --- | --- |
+   | Access ID | El del paso 3 |
+   | Access Secret | El del paso 3 |
+   | Región | `EU` (Central Europe) |
+   | Identificador | Déjalo vacío salvo que tengas varios robots |
+
+3. Pulsa **Enviar**. La integración pide la clave a Tuya, la rellena y te lleva al
+   formulario final.
+
+Las credenciales **no se guardan**: se usan una vez y se descartan.
+
+### Opción B · Ya tengo la clave local
+
+Si la tienes (porque la guardaste al instalarla, o porque la sacaste de la app), elige
+**Ya tengo la clave local** y pégala. Fin.
+
+### Opción C · A mano, para quien quiera el dato físico
+
+Si prefieres no dar credenciales a nadie y tienes acceso al móvil donde está vinculado el
+robot, la clave se puede extraer de los datos de la propia app. Requiere un móvil Android
+con depuración USB y un programa de terminal: es la vía de la documentación antigua y solo
+la recomendamos si las otras dos fallan.
+
+## Paso 6 · Terminar y comprobar
+
+1. En el formulario final, elige el **nombre** del robot. Es opcional: si lo dejas vacío se
+   llamará *Robot aspirador*.
+2. Pulsa **Enviar**. La integración abre una conexión de prueba:
+   - Si el robot responde, la entrada queda creada y las entidades aparecen solas.
+   - Si algo falla, verás el error explicado en el apartado siguiente.
+3. Comprueba en *Ajustes → Dispositivos y servicios → Vactidy* que el estado es **En base**
+   o **Cargando**, con la batería al nivel real.
+
+Prueba rápida: abre la tarjeta del robot y pulsa **Localizar**. El robot debería decir algo.
+Después, **Volver a la base** lo devuelve a su sitio.
+
+## Si algo va mal
+
+| Lo que ves | Qué significa | Qué hacer |
+| --- | --- | --- |
+| «No se puede alcanzar el robot» | La IP no responde en el puerto 6668 | Comprueba que el robot está encendido y en la misma red; revisa que la IP no haya cambiado (ponle IP fija en el router) |
+| «La clave local ha sido rechazada» | La clave tiene 16 caracteres pero no es la del robot | Vuelve a copiarla completa, sin espacios; si la regeneraste en la app, usa la nueva |
+| «El dispositivo respondió, pero no informa los puntos de datos esperados» | Es un aparato Tuya, pero no de esta familia | Este modelo no es compatible; abre una incidencia con el modelo exacto |
+| No aparece Vactidy al añadir la integración | No se reinició tras instalar | Reinicia Home Assistant y vuelve a *Ajustes → Dispositivos y servicios* |
+| La integración no encuentra el robot | Difusión bloqueada o el robot está en otra subred | Escribe la IP y el identificador a mano; están en la app Tuya, en *Ajustes del dispositivo → Información del dispositivo* |
+| «Autenticación de Tuya Cloud rechazada» | Access ID o Secret incorrectos | Cópialos otra vez de *Overview*; ojo, no son los de la app sino los del proyecto |
+| «La cuenta de Tuya no tiene dispositivos vinculados» | Falta el paso del QR | Repite *Devices → Link Tuya App account* |
+
+El registro completo está en *Ajustes → Sistema → Registros*, filtrando por `vactidy`.
+
+## Entidades que aparecen
 
 | Plataforma | Entidades |
 | --- | --- |
@@ -90,7 +195,23 @@ La entidad `vacuum` expone además como atributos el estado en crudo, la superfi
 tiempo de la limpieza, el modo, el caudal, si la mopa está puesta, el número de limpiezas
 y el código de avería con su descripción.
 
-## Cómo funciona
+## Compatibilidad
+
+El mapa de data points que usa esta integración **no es de Vactidy**: es el que Tuya
+comparte entre varias marcas blancas. El W15 coincide casi al 100 % con el Proscenic M9, y
+por eso es muy probable que funcione en otros robots con el mismo `productId` o similar.
+
+Si tu robot usa otro mapa, la integración lo detecta al configurarla y te lo dice con el
+error «no informa los puntos de datos esperados» en vez de crear entidades rotas.
+
+Modelos confirmados:
+
+| Modelo | Estado |
+| --- | --- |
+| Vactidy Cleanova W15 | Probado |
+| Otros Vactidy con Tuya 3.3 | Sin probar; prueba y cuéntalo en una incidencia |
+
+## Cómo funciona (para curiosos)
 
 El cliente (`tuya_local.py`) implementa el protocolo local de Tuya 3.3 en asyncio puro:
 
@@ -100,8 +221,8 @@ El cliente (`tuya_local.py`) implementa el protocolo local de Tuya 3.3 en asynci
 - El robot responde repitiendo el comando recibido, no con `STATUS (0x08)`; el cliente
   acepta cualquier mensaje que traiga `dps`.
 
-No se usa la nube en ningún momento. El único requisito externo es `cryptography`, que
-ya viene con Home Assistant.
+No se usa la nube en ningún momento. El único requisito externo es `cryptography`, que ya
+viene con Home Assistant.
 
 ## Limitaciones y hoja de ruta
 
@@ -113,7 +234,7 @@ ya viene con Home Assistant.
 
 ## Capturas
 
-Las imágenes viven en `docs/images/` y se referencian desde aquí:
+Las imágenes viven en `docs/images/`:
 
 | Fichero | Contenido |
 | --- | --- |
