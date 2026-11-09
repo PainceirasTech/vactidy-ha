@@ -3,7 +3,23 @@
     "step": {
       "user": {
         "title": "Robot Vactidy",
-        "description": "O robot detéctase automaticamente na rede local, así que o enderezo IP e o identificador xa veñen cubertos. Só necesitas a **clave local**: a clave de 16 caracteres do dispositivo, dispoñible na app Tuya ou no panel Tuya IoT.\n\nRobot detectado: {detected}",
+        "description": "Robot detectado: {detected}\n\nComo queres obter a clave local?",
+        "menu_options": {
+          "local": "Xa teño a clave local",
+          "cloud": "Obtela de Tuya Cloud"
+        }
+      },
+      "reconfigure": {
+        "title": "Actualizar conexión",
+        "description": "Cambia o enderezo IP ou a clave local se o robot se moveu a outro enderezo ou a clave rotou.",
+        "data": {
+          "host": "Enderezo IP",
+          "local_key": "Clave local"
+        }
+      },
+      "local": {
+        "title": "Conectar o robot",
+        "description": "Revisa o enderezo detectado e pega a **clave local** do dispositivo.",
         "data": {
           "host": "Enderezo IP",
           "device_id": "ID do dispositivo",
@@ -14,12 +30,18 @@
           "local_key": "Clave de 16 caracteres coa que o robot cifra o tráfico local."
         }
       },
-      "reconfigure": {
-        "title": "Actualizar conexión",
-        "description": "Cambia o enderezo IP ou a clave local se o robot se moveu a outro enderezo ou a clave rotou.",
+      "cloud": {
+        "title": "Obter a clave de Tuya Cloud",
+        "description": "Usa as credenciais do teu propio proxecto de Tuya IoT. A clave lese unha soa vez, durante a alta, e gárdase só no teu Home Assistant.\n\nA rexión ten que coincidir coa do proxecto.",
         "data": {
-          "host": "Enderezo IP",
-          "local_key": "Clave local"
+          "client_id": "Access ID",
+          "client_secret": "Access Secret",
+          "region": "Rexión",
+          "device_id": "ID do dispositivo"
+        },
+        "data_description": {
+          "client_id": "Está en iot.tuya.com → Cloud → o teu proxecto → Overview.",
+          "client_secret": "Está xunto ao Access ID, no mesmo panel."
         }
       }
     },
@@ -27,7 +49,11 @@
       "cannot_connect": "Non se pode acadar o robot na rede local.",
       "invalid_auth": "A clave local foi rexeitada. Revisa a clave e a versión do protocolo.",
       "unknown": "Erro inesperado.",
-      "unsupported_device": "O dispositivo respondeu, pero non informa os puntos de datos agardados. Probablemente sexa outro modelo de robot."
+      "unsupported_device": "O dispositivo respondeu, pero non informa os puntos de datos agardados. Probablemente sexa outro modelo de robot.",
+      "invalid_cloud_auth": "Tuya rexeitou as credenciais do proxecto.",
+      "cloud_not_linked": "O proxecto non ten permiso sobre o dispositivo. Vincula a túa conta da app Tuya no panel IoT (Devices → Link Tuya App account).",
+      "cloud_device_not_found": "O dispositivo non aparece nesa conta de Tuya ou non ten clave local.",
+      "cloud_error": "Erro inesperado ao falar con Tuya Cloud. Inténtao máis tarde."
     },
     "abort": {
       "already_configured": "Este robot xa está configurado."

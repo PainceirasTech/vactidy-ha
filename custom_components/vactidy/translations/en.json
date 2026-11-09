@@ -3,7 +3,23 @@
     "step": {
       "user": {
         "title": "Vactidy robot",
-        "description": "The robot is discovered automatically on your local network, so the IP address and the device ID are already filled in. You only need the **local key**: the 16-character key of the device, available in the Tuya app or the Tuya IoT panel.\n\nDetected robot: {detected}",
+        "description": "Detected robot: {detected}\n\nHow do you want to get the local key?",
+        "menu_options": {
+          "local": "I already have the local key",
+          "cloud": "Get it from Tuya Cloud"
+        }
+      },
+      "reconfigure": {
+        "title": "Update connection",
+        "description": "Change the IP address or the local key if the robot moved to a different network address or the key was rotated.",
+        "data": {
+          "host": "IP address",
+          "local_key": "Local key"
+        }
+      },
+      "local": {
+        "title": "Connect the robot",
+        "description": "Check the detected address and paste the **local key** of the device.",
         "data": {
           "host": "IP address",
           "device_id": "Device ID",
@@ -14,12 +30,18 @@
           "local_key": "16-character key the robot uses to encrypt local traffic."
         }
       },
-      "reconfigure": {
-        "title": "Update connection",
-        "description": "Change the IP address or the local key if the robot moved to a different network address or the key was rotated.",
+      "cloud": {
+        "title": "Get the key from Tuya Cloud",
+        "description": "Uses the credentials of your own Tuya IoT project. The key is read once, during setup, and stored only on your Home Assistant.\n\nThe region must match the one chosen when the project was created.",
         "data": {
-          "host": "IP address",
-          "local_key": "Local key"
+          "client_id": "Access ID",
+          "client_secret": "Access Secret",
+          "region": "Region",
+          "device_id": "Device ID"
+        },
+        "data_description": {
+          "client_id": "Found at iot.tuya.com → Cloud → your project → Overview.",
+          "client_secret": "Found next to the Access ID, in the same panel."
         }
       }
     },
@@ -27,7 +49,11 @@
       "cannot_connect": "Cannot reach the robot on the local network.",
       "invalid_auth": "The local key was rejected. Check the key and the protocol version.",
       "unknown": "Unexpected error.",
-      "unsupported_device": "The device answered, but it does not report the expected data points. It is probably a different robot model."
+      "unsupported_device": "The device answered, but it does not report the expected data points. It is probably a different robot model.",
+      "invalid_cloud_auth": "Tuya rejected the project credentials.",
+      "cloud_not_linked": "The project has no permission over the device. Link your Tuya app account in the IoT panel (Devices → Link Tuya App account).",
+      "cloud_device_not_found": "The device does not appear in that Tuya account or it has no local key.",
+      "cloud_error": "Unexpected error talking to Tuya Cloud. Try again later."
     },
     "abort": {
       "already_configured": "This robot is already configured."

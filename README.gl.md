@@ -29,18 +29,12 @@ fabricante: Home Assistant fala co robot directamente por TCP no porto 6668.
 - Home Assistant 2024.11 ou superior.
 - O robot e Home Assistant na mesma rede local.
 - A **clave local** do dispositivo: 16 caracteres que o fabricante asigna ao vincular o
-  robot e que non caducan. É o único dato que terás que pegar a man.
+  robot e que non caducan. É o único dato que fai falta, e a integración pode pedirlla
+  soa a Tuya se lle dás credenciais de desenvolvedor.
 
-  A forma máis sinxela de obtela, sen terminal, é o panel de desenvolvedor de Tuya:
-
-  1. Entra en <https://iot.tuya.com> e crea un proxecto na nube (o plan gratuíto abonda).
-  2. En *Devices → Link Tuya App account*, vincula a túa conta da app Tuya escaneando o
-     código QR co móbil.
-  3. Abre o robot en *Devices* e copia **Local key** da pestana *Device details*.
-
-  Alternativas se prefires facelo todo en local: `tinytuya wizard` (descarga as claves coa
-  túa conta de desenvolvedor) ou extraer o campo `localKey` de
-  `shared_prefs/spUtils.xml` nun móbil Android coa app xa vinculada.
+  Esa clave é un segredo de fábrica: non se deriva do identificador nin viaxa pola rede
+  local, así que ningún programa pode adiviñala. O que si se pode evitar é o traballo
+  manual de buscala, e para iso están as dúas vías do apartado seguinte.
 
 ## Instalación
 
@@ -59,13 +53,21 @@ instalación de Home Assistant e reinicia.
 
 1. Axustes → Dispositivos e servizos → **Engadir integración** → *Vactidy*.
 2. A integración busca o robot na rede local e **enche soa o enderezo IP e o
-   identificador**. Só tes que pegar a **clave local** e, se queres, cambiar o nome.
+   identificador**. Despois escolle unha das dúas vías:
+
+   - **Xa teño a clave local**: pégala e ponlle nome ao robot. É todo.
+   - **Obtela de Tuya Cloud**: introduce o *Access ID* e o *Access Secret* dun proxecto
+     gratuíto de <https://iot.tuya.com> coa túa conta da app Tuya vinculada
+     (*Devices → Link Tuya App account*). A integración pide a clave a Tuya, enche o
+     formulario e crea a entrada. As credenciais non se almacenan: só se usan nese
+     momento.
+
 3. Preme **Enviar**. Abre unha conexión de proba co robot e, se responde, a entrada queda
    creada.
 
 Se o descubrimento non atopa o robot (porque está noutra subrede ou o router bloquea a
-difusión), podes escribir o IP e o identificador a man. O identificador aparece na app
-Tuya, en *Axustes do dispositivo → Información do dispositivo*.
+difusión), os dous campos aparecen baleiros e podes escribilos a man. O identificador está
+na app Tuya, en *Axustes do dispositivo → Información do dispositivo*.
 
 A integración valida a conexión antes de gardar: se a clave é incorrecta verás **«A clave
 local foi rexeitada»**, se o IP non responde **«Non se pode alcanzar o robot»** e se o

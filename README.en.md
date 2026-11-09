@@ -29,18 +29,12 @@ Assistant talks to the robot directly over TCP port 6668.
 - Home Assistant 2024.11 or newer.
 - The robot and Home Assistant on the same local network.
 - The **local key** of the device: 16 characters assigned by the manufacturer when the
-  robot is linked and which never expire. It is the only value you have to paste by hand.
+  robot is linked and which never expire. It is the only value needed, and the integration
+  can ask Tuya for it if you provide developer credentials.
 
-  The simplest way to get it, with no terminal involved, is the Tuya developer panel:
-
-  1. Sign in at <https://iot.tuya.com> and create a Cloud project (the free plan is enough).
-  2. In *Devices → Link Tuya App account*, link your Tuya app account by scanning the QR
-     code with your phone.
-  3. Open the robot in *Devices* and copy the **Local key** from *Device details*.
-
-  Alternatives if you prefer to work fully locally: `tinytuya wizard` (downloads the keys
-  with your developer account) or extract the `localKey` field from
-  `shared_prefs/spUtils.xml` on an Android phone with the app already linked.
+  That key is a factory secret: it is not derived from the device ID and it never travels
+  over the local network, so no program can guess it. What can be avoided is the manual
+  work of hunting it down, which is what the two routes below are for.
 
 ## Installation
 
@@ -58,13 +52,20 @@ Copy the `custom_components/vactidy` folder into `config/custom_components/` and
 
 1. Settings → Devices & services → **Add integration** → *Vactidy*.
 2. The integration looks for the robot on the local network and **fills in the IP address
-   and the device ID by itself**. You only have to paste the **local key** and, if you
-   want, change the name.
+   and the device ID by itself**. Then choose one of the two routes:
+
+   - **I already have the local key**: paste it and give the robot a name. That is all.
+   - **Get it from Tuya Cloud**: enter the *Access ID* and *Access Secret* of a free project
+     at <https://iot.tuya.com> with your Tuya app account linked
+     (*Devices → Link Tuya App account*). The integration asks Tuya for the key, fills in
+     the form and creates the entry. The credentials are not stored: they are used only at
+     that moment.
+
 3. Press **Submit**. A test connection is opened with the robot and, if it answers, the
    entry is created.
 
 If discovery does not find the robot (because it sits on another subnet or the router
-blocks broadcasts), you can type the IP address and the device ID by hand. The device ID
+blocks broadcasts), both fields appear empty and you can type them by hand. The device ID
 is shown in the Tuya app under *Device settings → Device information*.
 
 The integration validates the connection before saving: a wrong key shows **"The local key
