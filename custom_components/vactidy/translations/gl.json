@@ -1,0 +1,133 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Robot Vactidy",
+        "description": "Introduce o enderezo de rede e a clave local do robot. Podes obtelas desde a app Tuya (ou coa API de Tuya Cloud) unha vez que o dispositivo está na rede local.",
+        "data": {
+          "host": "Enderezo IP",
+          "device_id": "ID do dispositivo",
+          "local_key": "Clave local",
+          "name": "Nome"
+        }
+      },
+      "reconfigure": {
+        "title": "Actualizar conexión",
+        "description": "Cambia o enderezo IP ou a clave local se o robot se moveu a outro enderezo ou a clave rotou.",
+        "data": {
+          "host": "Enderezo IP",
+          "local_key": "Clave local"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Non se pode acadar o robot na rede local.",
+      "invalid_auth": "A clave local foi rexeitada. Revisa a clave e a versión do protocolo.",
+      "unknown": "Erro inesperado."
+    },
+    "abort": {
+      "already_configured": "Este robot xa está configurado."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": { "name": "Batería" },
+      "clean_area": { "name": "Superficie limpiada" },
+      "clean_time": { "name": "Tempo de limpeza" },
+      "status": {
+        "name": "Estado",
+        "state": {
+          "standby": "En espera",
+          "smart": "Limpando",
+          "zone_clean": "Limpeza por zonas",
+          "part_clean": "Limpeza puntual",
+          "cleaning": "Limpando",
+          "paused": "En pausa",
+          "goto_pos": "Indo ao punto",
+          "pos_arrived": "Punto acadado",
+          "pos_unarrive": "Non pode acadar o punto",
+          "goto_charge": "Volvendo á base",
+          "charging": "Cargando",
+          "charge_done": "Carga completa",
+          "sleep": "Durmido",
+          "fault": "Avería",
+          "wall_follow": "Seguindo paredes",
+          "direction_control": "Control manual",
+          "repositing": "Reposicionándose",
+          "select_room": "Limpeza por habitación",
+          "seek_dust_bucket": "Baleirando o depósito",
+          "collecting_dust": "Recollendo po"
+        }
+      },
+      "total_area": { "name": "Superficie total limpiada" },
+      "total_clean_count": { "name": "Limpezas totais" },
+      "total_clean_time": { "name": "Tempo total de limpeza" },
+      "side_brush_life": { "name": "Vida restante do cepillo lateral" },
+      "main_brush_life": { "name": "Vida restante do cepillo principal" },
+      "sensor_life": { "name": "Vida restante dos sensores" },
+      "mop_life": { "name": "Vida restante da mopa" },
+      "fault": {
+        "name": "Avería",
+        "state": {
+          "sin_averia": "Sen avería",
+          "dustbin_missing": "Falta o depósito",
+          "mop_missing": "Mopa non instalada",
+          "robot_lifted": "Robot levantado do chan",
+          "dustbag_full": "Bolsa de po chea",
+          "dustbag_missing": "Falta a bolsa de po",
+          "bumper_stuck": "Paragolpes atascado",
+          "robot_stuck": "Robot atascado",
+          "low_suction": "Succión insuficiente"
+        }
+      }
+    },
+    "binary_sensor": {
+      "charging": { "name": "Cargando" },
+      "problem": { "name": "Problema" },
+      "docked": { "name": "Na base" },
+      "do_not_disturb": { "name": "Non molestar" },
+      "mop_installed": { "name": "Mopa instalada" }
+    },
+    "select": {
+      "water_level": {
+        "name": "Caudal de auga",
+        "state": {
+          "closed": "Apagado",
+          "installed": "Instalado",
+          "low": "Baixo",
+          "middle": "Medio",
+          "high": "Alto"
+        }
+      },
+      "clean_mode": {
+        "name": "Modo de limpeza",
+        "state": {
+          "only_sweep": "Só barrer",
+          "only_mop": "Só fregar",
+          "both_work": "Barrer e fregar"
+        }
+      }
+    },
+    "switch": {
+      "do_not_disturb": { "name": "Non molestar" },
+      "led": { "name": "Luz do panel" }
+    },
+    "button": {
+      "locate": { "name": "Localizar" },
+      "empty_dustbin": { "name": "Baleirar depósito" },
+      "reset_side_brush": { "name": "Reiniciar cepillo lateral" },
+      "reset_main_brush": { "name": "Reiniciar cepillo principal" },
+      "reset_sensor": { "name": "Reiniciar sensores" },
+      "reset_mop": { "name": "Reiniciar mopa" }
+    },
+    "vacuum": {
+      "fan_speed": {
+        "closed": "Apagado",
+        "gentle": "Suave",
+        "normal": "Normal",
+        "strong": "Forte",
+        "max": "Máxima"
+      }
+    }
+  }
+}

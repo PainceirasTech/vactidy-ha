@@ -1,0 +1,29 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Editores y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secretos y volcados locales (nunca subir claves locales)
+*.local_key
+secrets.yaml
+token.txt
+*_token
+
+# Salidas de pruebas
+*.log
+coverage.xml
