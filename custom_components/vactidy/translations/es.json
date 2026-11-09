@@ -197,12 +197,16 @@
       }
     },
     "vacuum": {
-      "fan_speed": {
-        "closed": "Apagado",
-        "gentle": "Suave",
-        "normal": "Normal",
-        "strong": "Fuerte",
-        "max": "Máxima"
+      "state_attributes": {
+        "fan_speed": {
+          "state": {
+            "closed": "Apagado",
+            "gentle": "Suave",
+            "normal": "Normal",
+            "strong": "Fuerte",
+            "max": "Máxima"
+          }
+        }
       }
     }
   }
