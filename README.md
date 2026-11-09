@@ -6,7 +6,7 @@ Home Assistant se conecta directamente al robot por tu red wifi.
 
 [English](README.en.md) · [Galego](README.gl.md)
 
-> **Estado:** v0.1.0. Probado sobre un **Vactidy Cleanova W15** (`productId`
+> **Estado:** v0.1.1. Probado sobre un **Vactidy Cleanova W15** (`productId`
 > `ut96oplbcckfxwwu`, firmware `40.00`, protocolo `2.2`), cuyo mapa de data points
 > coincide casi por completo con el Proscenic M9.
 
@@ -32,16 +32,21 @@ Todo funciona en local: si se cae internet, el robot sigue respondiendo.
 Necesitas cuatro cosas:
 
 1. Home Assistant **2024.11 o superior**.
-2. **HACS** instalado. Si no lo tienes, el paso 1 lo explica.
+2. Acceso al **Marketplace** de integraciones. Si tienes Home Assistant **2026.11 o
+   posterior**, el Marketplace viene incluido: está en *Ajustes → Marketplace*. En
+   versiones anteriores se llama **HACS** y hay que instalarlo (paso 1).
 3. El robot **encendido y conectado a la misma red** que Home Assistant.
 4. Diez minutos y la **clave local** del robot. Si no la tienes, el paso 5 explica cómo
    conseguirla sin usar la terminal.
 
 ---
 
-## Paso 1 · Instalar HACS (si todavía no lo tienes)
+## Paso 1 · Abrir el Marketplace
 
-Si en la barra lateral ya ves **HACS**, salta al paso 2.
+**Home Assistant 2026.11 o posterior:** el Marketplace ya viene dentro de Home Assistant.
+Entra en *Ajustes → Marketplace* y salta al paso 2. No hay que instalar nada.
+
+**Versiones anteriores:** el mismo catálogo se llama **HACS** y se instala aparte.
 
 1. Instala el add-on **Terminal & SSH** desde *Ajustes → Complementos → Tienda de
    complementos*, o entra por SSH a tu instalación.
@@ -54,13 +59,16 @@ Si en la barra lateral ya ves **HACS**, salta al paso 2.
 3. Reinicia Home Assistant.
 4. Ve a *Ajustes → Dispositivos y servicios → Añadir integración* y busca **HACS**.
    Acéptalo todo y, cuando te pida autorizar en GitHub, introduce el código que te muestra.
-5. HACS aparece ya en la barra lateral.
 
-> En algunas versiones el menú se llama **Marketplace**. Es el mismo sitio.
+## Paso 2 · Instalar Vactidy
 
-## Paso 2 · Añadir este repositorio a HACS
+**Si Vactidy ya aparece en el catálogo** (búscalo en *Marketplace → Integraciones*), abre
+la ficha y pulsa **Descargar**. Salta al paso 3.
 
-1. Abre **HACS** en la barra lateral.
+**Si todavía no aparece**, la inclusión en el catálogo sigue en revisión y hay que añadir
+el repositorio a mano:
+
+1. Abre **Marketplace** (o **HACS**) en la barra lateral.
 2. Entra en **Integraciones**.
 3. Arriba a la derecha, menú de tres puntos → **Repositorios personalizados**
    (*Custom repositories*).
@@ -71,14 +79,11 @@ Si en la barra lateral ya ves **HACS**, salta al paso 2.
    | Repositorio | `https://github.com/PainceirasTech/vactidy-ha` |
    | Categoría | **Integration** |
 
-5. Pulsa **Añadir**.
+5. Pulsa **Añadir**, busca **Vactidy**, abre la ficha y pulsa **Descargar**.
 
-## Paso 3 · Instalar la integración
+## Paso 3 · Reiniciar Home Assistant
 
-1. Sigue en **HACS → Integraciones**.
-2. Busca **Vactidy**.
-3. Ábrelo y pulsa **Descargar** (*Download*).
-4. Cuando termine, **reinicia Home Assistant** desde *Ajustes → Sistema → Reiniciar*.
+Reinicia desde *Ajustes → Sistema → Reiniciar*.
 
 El reinicio no es opcional: hasta que no reinicies, Home Assistant no ve la integración.
 
