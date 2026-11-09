@@ -74,6 +74,7 @@ class VactidyVacuum(VactidyEntity, StateVacuumEntity):
     """Robot aspirador Vactidy."""
 
     _attr_name = None
+    _attr_translation_key = "vacuum"
     _attr_supported_features = SUPPORTED_FEATURES
 
     def __init__(self, coordinator) -> None:
