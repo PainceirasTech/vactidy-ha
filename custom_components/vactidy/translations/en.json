@@ -3,12 +3,15 @@
     "step": {
       "user": {
         "title": "Vactidy robot",
-        "description": "Enter the network address and the local key of the robot. You can obtain them from the Tuya app (or with Tuya Cloud API) once the device is linked to the local network.",
+        "description": "The robot is discovered automatically on your local network, so the IP address and the device ID are already filled in. You only need the **local key**: the 16-character key of the device, available in the Tuya app or the Tuya IoT panel.\n\nDetected robot: {detected}",
         "data": {
           "host": "IP address",
           "device_id": "Device ID",
           "local_key": "Local key",
           "name": "Name"
+        },
+        "data_description": {
+          "local_key": "16-character key the robot uses to encrypt local traffic."
         }
       },
       "reconfigure": {
@@ -23,7 +26,8 @@
     "error": {
       "cannot_connect": "Cannot reach the robot on the local network.",
       "invalid_auth": "The local key was rejected. Check the key and the protocol version.",
-      "unknown": "Unexpected error."
+      "unknown": "Unexpected error.",
+      "unsupported_device": "The device answered, but it does not report the expected data points. It is probably a different robot model."
     },
     "abort": {
       "already_configured": "This robot is already configured."
@@ -31,9 +35,15 @@
   },
   "entity": {
     "sensor": {
-      "battery": { "name": "Battery" },
-      "clean_area": { "name": "Cleaned area" },
-      "clean_time": { "name": "Cleaning time" },
+      "battery": {
+        "name": "Battery"
+      },
+      "clean_area": {
+        "name": "Cleaned area"
+      },
+      "clean_time": {
+        "name": "Cleaning time"
+      },
       "status": {
         "name": "Status",
         "state": {
@@ -59,13 +69,27 @@
           "collecting_dust": "Collecting dust"
         }
       },
-      "total_area": { "name": "Total cleaned area" },
-      "total_clean_count": { "name": "Total cleanings" },
-      "total_clean_time": { "name": "Total cleaning time" },
-      "side_brush_life": { "name": "Side brush remaining life" },
-      "main_brush_life": { "name": "Main brush remaining life" },
-      "sensor_life": { "name": "Sensor remaining life" },
-      "mop_life": { "name": "Mop remaining life" },
+      "total_area": {
+        "name": "Total cleaned area"
+      },
+      "total_clean_count": {
+        "name": "Total cleanings"
+      },
+      "total_clean_time": {
+        "name": "Total cleaning time"
+      },
+      "side_brush_life": {
+        "name": "Side brush remaining life"
+      },
+      "main_brush_life": {
+        "name": "Main brush remaining life"
+      },
+      "sensor_life": {
+        "name": "Sensor remaining life"
+      },
+      "mop_life": {
+        "name": "Mop remaining life"
+      },
       "fault": {
         "name": "Fault",
         "state": {
@@ -82,11 +106,21 @@
       }
     },
     "binary_sensor": {
-      "charging": { "name": "Charging" },
-      "problem": { "name": "Problem" },
-      "docked": { "name": "On dock" },
-      "do_not_disturb": { "name": "Do not disturb" },
-      "mop_installed": { "name": "Mop installed" }
+      "charging": {
+        "name": "Charging"
+      },
+      "problem": {
+        "name": "Problem"
+      },
+      "docked": {
+        "name": "On dock"
+      },
+      "do_not_disturb": {
+        "name": "Do not disturb"
+      },
+      "mop_installed": {
+        "name": "Mop installed"
+      }
     },
     "select": {
       "water_level": {
@@ -109,16 +143,32 @@
       }
     },
     "switch": {
-      "do_not_disturb": { "name": "Do not disturb" },
-      "led": { "name": "Panel light" }
+      "do_not_disturb": {
+        "name": "Do not disturb"
+      },
+      "led": {
+        "name": "Panel light"
+      }
     },
     "button": {
-      "locate": { "name": "Locate" },
-      "empty_dustbin": { "name": "Empty dustbin" },
-      "reset_side_brush": { "name": "Reset side brush" },
-      "reset_main_brush": { "name": "Reset main brush" },
-      "reset_sensor": { "name": "Reset sensor" },
-      "reset_mop": { "name": "Reset mop" }
+      "locate": {
+        "name": "Locate"
+      },
+      "empty_dustbin": {
+        "name": "Empty dustbin"
+      },
+      "reset_side_brush": {
+        "name": "Reset side brush"
+      },
+      "reset_main_brush": {
+        "name": "Reset main brush"
+      },
+      "reset_sensor": {
+        "name": "Reset sensor"
+      },
+      "reset_mop": {
+        "name": "Reset mop"
+      }
     },
     "vacuum": {
       "fan_speed": {

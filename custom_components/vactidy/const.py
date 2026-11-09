@@ -7,6 +7,7 @@ from typing import Final
 
 DOMAIN: Final = "vactidy"
 MANUFACTURER: Final = "Vactidy"
+DEFAULT_NAME: Final = "Robot aspirador"
 
 # Claves de la entrada de configuración.
 CONF_DEVICE_ID: Final = "device_id"

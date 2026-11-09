@@ -28,13 +28,19 @@ fabricante: Home Assistant fala co robot directamente por TCP no porto 6668.
 
 - Home Assistant 2024.11 ou superior.
 - O robot e Home Assistant na mesma rede local.
-- A **clave local** do dispositivo: 16 caracteres que o fabricante entrega ao vincular o
-  robot e que non caduca. Pódese obter de dúas formas:
-  1. Con `tinytuya wizard`, que a descarga da API de Tuya Cloud pedindo as claves da túa
-     conta de desenvolvedor.
-  2. Extraéndoa do propio teléfono se xa tes a app Tuya vinculada
-     (`shared_prefs/spUtils.xml`, campo `localKey`).
-- Unha **IP fixa** para o robot. Recoméndase reservala no router por MAC.
+- A **clave local** do dispositivo: 16 caracteres que o fabricante asigna ao vincular o
+  robot e que non caducan. É o único dato que terás que pegar a man.
+
+  A forma máis sinxela de obtela, sen terminal, é o panel de desenvolvedor de Tuya:
+
+  1. Entra en <https://iot.tuya.com> e crea un proxecto na nube (o plan gratuíto abonda).
+  2. En *Devices → Link Tuya App account*, vincula a túa conta da app Tuya escaneando o
+     código QR co móbil.
+  3. Abre o robot en *Devices* e copia **Local key** da pestana *Device details*.
+
+  Alternativas se prefires facelo todo en local: `tinytuya wizard` (descarga as claves coa
+  túa conta de desenvolvedor) ou extraer o campo `localKey` de
+  `shared_prefs/spUtils.xml` nun móbil Android coa app xa vinculada.
 
 ## Instalación
 
@@ -52,19 +58,20 @@ instalación de Home Assistant e reinicia.
 ## Configuración
 
 1. Axustes → Dispositivos e servizos → **Engadir integración** → *Vactidy*.
-2. Enche os catro campos:
+2. A integración busca o robot na rede local e **enche soa o enderezo IP e o
+   identificador**. Só tes que pegar a **clave local** e, se queres, cambiar o nome.
+3. Preme **Enviar**. Abre unha conexión de proba co robot e, se responde, a entrada queda
+   creada.
 
-| Campo | Exemplo | De onde se obtén |
-| --- | --- | --- |
-| Enderezo IP | `192.168.5.210` | Reserva DHCP do router |
-| ID do dispositivo | `bf3e20ee26fbdcffd8e8kl` | `tinytuya wizard` ou a app |
-| Clave local | 16 caracteres | `tinytuya wizard` ou `spUtils.xml` |
-| Nome | `Robot salón` | O que queiras |
+Se o descubrimento non atopa o robot (porque está noutra subrede ou o router bloquea a
+difusión), podes escribir o IP e o identificador a man. O identificador aparece na app
+Tuya, en *Axustes do dispositivo → Información do dispositivo*.
 
 A integración valida a conexión antes de gardar: se a clave é incorrecta verás **«A clave
-local foi rexeitada»**, e se a IP non responde, **«Non se pode acadar o robot»**. Se máis
-adiante cambia a IP ou rotas a clave, usa **Reconfigurar** na entrada; non fai falta
-borrala.
+local foi rexeitada»**, se o IP non responde **«Non se pode alcanzar o robot»** e se o
+aparello contesta pero non é desta familia, **«O dispositivo respondeu, pero non informa
+os puntos de datos agardados»**. Se máis adiante cambia o IP ou rotas a clave, usa
+**Reconfigurar** na entrada; non fai falta borrala.
 
 ## Entidades
 
@@ -109,7 +116,7 @@ vén con Home Assistant.
 | --- | --- |
 | `docs/images/integracion.png` | A integración engadida en Axustes → Dispositivos e servizos |
 | `docs/images/tarjeta.png` | Tarxeta do robot coas súas entidades no panel |
-| `docs/images/configuracion.png` | Formulario de alta cos catro campos |
+| `docs/images/configuracion.png` | Formulario de alta co robot xa detectado e a clave local como único campo manual |
 
 ## Licenza
 

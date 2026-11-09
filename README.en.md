@@ -27,14 +27,20 @@ Assistant talks to the robot directly over TCP port 6668.
 ## Requirements
 
 - Home Assistant 2024.11 or newer.
-- Robot and Home Assistant on the same local network.
-- The device **local key**: a 16 character value handed out when the robot is paired. It
-  never expires. You can get it in two ways:
-  1. `tinytuya wizard`, which pulls it from the Tuya Cloud API using your developer
-     account keys.
-  2. Extracting it from the phone where the Tuya app is already paired
-     (`shared_prefs/spUtils.xml`, `localKey` field).
-- A **fixed IP** for the robot. Reserving the lease by MAC on your router is recommended.
+- The robot and Home Assistant on the same local network.
+- The **local key** of the device: 16 characters assigned by the manufacturer when the
+  robot is linked and which never expire. It is the only value you have to paste by hand.
+
+  The simplest way to get it, with no terminal involved, is the Tuya developer panel:
+
+  1. Sign in at <https://iot.tuya.com> and create a Cloud project (the free plan is enough).
+  2. In *Devices → Link Tuya App account*, link your Tuya app account by scanning the QR
+     code with your phone.
+  3. Open the robot in *Devices* and copy the **Local key** from *Device details*.
+
+  Alternatives if you prefer to work fully locally: `tinytuya wizard` (downloads the keys
+  with your developer account) or extract the `localKey` field from
+  `shared_prefs/spUtils.xml` on an Android phone with the app already linked.
 
 ## Installation
 
@@ -51,19 +57,21 @@ Copy the `custom_components/vactidy` folder into `config/custom_components/` and
 ## Configuration
 
 1. Settings → Devices & services → **Add integration** → *Vactidy*.
-2. Fill in the four fields:
+2. The integration looks for the robot on the local network and **fills in the IP address
+   and the device ID by itself**. You only have to paste the **local key** and, if you
+   want, change the name.
+3. Press **Submit**. A test connection is opened with the robot and, if it answers, the
+   entry is created.
 
-| Field | Example | Where to get it |
-| --- | --- | --- |
-| IP address | `192.168.5.210` | Router DHCP reservation |
-| Device ID | `bf3e20ee26fbdcffd8e8kl` | `tinytuya wizard` or the app |
-| Local key | 16 characters | `tinytuya wizard` or `spUtils.xml` |
-| Name | `Living room robot` | Anything you like |
+If discovery does not find the robot (because it sits on another subnet or the router
+blocks broadcasts), you can type the IP address and the device ID by hand. The device ID
+is shown in the Tuya app under *Device settings → Device information*.
 
-The integration validates the connection before saving: a wrong key shows **“The local
-key was rejected”**, an unreachable IP shows **“Cannot reach the robot”**. If the IP
-changes or you rotate the key later, use **Reconfigure** on the entry; no need to delete
-it.
+The integration validates the connection before saving: a wrong key shows **"The local key
+was rejected"**, an unreachable IP shows **"Cannot reach the robot"**, and a device that
+answers but belongs to another family shows **"The device answered, but it does not report
+the expected data points"**. If the IP changes later or the key is rotated, use
+**Reconfigure** on the entry; there is no need to delete it.
 
 ## Entities
 
@@ -106,7 +114,7 @@ shipped with Home Assistant.
 | --- | --- |
 | `docs/images/integracion.png` | The integration listed under Settings → Devices & services |
 | `docs/images/tarjeta.png` | Robot card with its entities on the dashboard |
-| `docs/images/configuracion.png` | Setup form with the four fields |
+| `docs/images/configuracion.png` | Setup form with the robot already detected and the local key as the only manual field |
 
 ## License
 

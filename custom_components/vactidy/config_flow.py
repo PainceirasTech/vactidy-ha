@@ -10,32 +10,71 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_HOST, CONF_NAME
 
-from .const import CONF_DEVICE_ID, CONF_LOCAL_KEY, CONNECT_TIMEOUT, DOMAIN, LOCAL_PORT
+from .const import (
+    CONF_DEVICE_ID,
+    CONF_LOCAL_KEY,
+    CONNECT_TIMEOUT,
+    DEFAULT_NAME,
+    DOMAIN,
+    LOCAL_PORT,
+)
+from .discovery import DiscoveredDevice, discover_devices_blocking
 from .tuya_local import TuyaAuthError, TuyaConnectionError, TuyaDevice, TuyaError
 
 _LOGGER = logging.getLogger(__name__)
 
-STEP_USER_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_HOST): str,
-        vol.Required(CONF_DEVICE_ID): str,
-        vol.Required(CONF_LOCAL_KEY): str,
-        vol.Optional(CONF_NAME, default="Robot aspirador"): str,
-    }
-)
-
-STEP_RECONFIGURE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_HOST): str,
-        vol.Required(CONF_LOCAL_KEY): str,
-    }
-)
+# Sin estos dos puntos de datos el robot no es de esta familia.
+CORE_DPS = {5, 8}
 
 
 class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Alta del robot pidiendo IP, identificador y clave local."""
+    """Alta del robot: el descubrimiento rellena IP e identificador."""
 
     VERSION = 1
+
+    def __init__(self) -> None:
+        self._discovered: DiscoveredDevice | None = None
+        self._discovery_done = False
+
+    def _base_schema(self) -> vol.Schema:
+        """Formulario con los datos del robot ya rellenos si se detectó."""
+        device = self._discovered
+        fields: dict[Any, Any] = {}
+        if device is not None:
+            fields[vol.Required(CONF_HOST, default=device.host)] = str
+            fields[vol.Required(CONF_DEVICE_ID, default=device.device_id)] = str
+        else:
+            fields[vol.Required(CONF_HOST)] = str
+            fields[vol.Required(CONF_DEVICE_ID)] = str
+        fields[vol.Required(CONF_LOCAL_KEY)] = str
+        fields[vol.Optional(CONF_NAME, default=DEFAULT_NAME)] = str
+        return vol.Schema(fields)
+
+    async def _async_discover(self) -> None:
+        """Busca el robot una sola vez por ejecución del flujo."""
+        if self._discovery_done:
+            return
+        self._discovery_done = True
+        try:
+            devices = await self.hass.async_add_executor_job(
+                discover_devices_blocking, 3.0
+            )
+        except OSError as err:
+            _LOGGER.debug("El descubrimiento falló: %s", err)
+            return
+        if not devices:
+            _LOGGER.debug("No se encontraron robots Tuya en la red local")
+            return
+        # Se prefiere un robot de la misma familia de firmware.
+        self._discovered = next(
+            (dev for dev in devices if dev.product_key), devices[0]
+        )
+        _LOGGER.debug(
+            "Robot detectado: %s en %s (%s)",
+            self._discovered.device_id,
+            self._discovered.host,
+            self._discovered.product_key,
+        )
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -58,21 +97,39 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
             except TuyaError:
                 errors["base"] = "unknown"
             else:
-                await self.async_set_unique_id(device.device_id)
-                self._abort_if_unique_id_configured()
                 await device.async_close()
-                _LOGGER.debug("Robot validado con %d data points", len(status))
-                return self.async_create_entry(
-                    title=user_input[CONF_NAME].strip() or "Robot aspirador",
-                    data={
-                        CONF_HOST: device.host,
-                        CONF_DEVICE_ID: device.device_id,
-                        CONF_LOCAL_KEY: device.local_key,
-                    },
-                )
+                if status and not CORE_DPS <= status.keys():
+                    errors["base"] = "unsupported_device"
+                else:
+                    await self.async_set_unique_id(device.device_id)
+                    self._abort_if_unique_id_configured()
+                    _LOGGER.debug("Robot validado con %d data points", len(status))
+                    return self.async_create_entry(
+                        title=user_input[CONF_NAME].strip() or DEFAULT_NAME,
+                        data={
+                            CONF_HOST: device.host,
+                            CONF_DEVICE_ID: device.device_id,
+                            CONF_LOCAL_KEY: device.local_key,
+                        },
+                    )
+
+        await self._async_discover()
+
+        schema = self._base_schema()
+        if user_input is not None:
+            schema = self.add_suggested_values_to_schema(schema, user_input)
 
         return self.async_show_form(
-            step_id="user", data_schema=STEP_USER_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=schema,
+            errors=errors,
+            description_placeholders={
+                "detected": (
+                    f"{self._discovered.host} · {self._discovered.device_id}"
+                    if self._discovered
+                    else "no"
+                )
+            },
         )
 
     async def async_step_reconfigure(
@@ -110,7 +167,13 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="reconfigure",
             data_schema=self.add_suggested_values_to_schema(
-                STEP_RECONFIGURE_SCHEMA, entry.data
+                vol.Schema(
+                    {
+                        vol.Required(CONF_HOST): str,
+                        vol.Required(CONF_LOCAL_KEY): str,
+                    }
+                ),
+                entry.data,
             ),
             errors=errors,
         )
