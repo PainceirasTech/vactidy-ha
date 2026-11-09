@@ -32,16 +32,22 @@
       },
       "cloud": {
         "title": "Get the key from Tuya Cloud",
-        "description": "Uses the credentials of your own Tuya IoT project. The key is read once, during setup, and stored only on your Home Assistant.\n\nThe region must match the one chosen when the project was created.",
+        "description": "The local key is a factory secret: only Tuya knows it, and it is stored only in your Home Assistant.\n\n1. Open [iot.tuya.com](https://iot.tuya.com/cloud/) and sign in.\n2. Go to **Cloud → Development** and open your project (create one if you have none).\n3. Copy **Access ID** and **Access Secret** from *Overview*.\n4. Check that your Tuya app account is linked: *Devices → Link Tuya App account*.\n\nThe region is detected automatically.",
         "data": {
           "client_id": "Access ID",
           "client_secret": "Access Secret",
-          "region": "Region",
-          "device_id": "Device ID"
+          "region": "Region"
         },
         "data_description": {
-          "client_id": "Found at iot.tuya.com → Cloud → your project → Overview.",
-          "client_secret": "Found next to the Access ID, in the same panel."
+          "client_id": "Overview of your project at [iot.tuya.com](https://iot.tuya.com/cloud/).",
+          "client_secret": "Next to the Access ID, in the same panel."
+        }
+      },
+      "cloud_device": {
+        "title": "Choose the robot",
+        "description": "Robots found in your Tuya account (region {region}). Pick the one you want to add.",
+        "data": {
+          "device": "Robot"
         }
       }
     },
@@ -50,7 +56,7 @@
       "invalid_auth": "The local key was rejected. Check the key and the protocol version.",
       "unknown": "Unexpected error.",
       "unsupported_device": "The device answered, but it does not report the expected data points. It is probably a different robot model.",
-      "invalid_cloud_auth": "Tuya rejected the project credentials.",
+      "invalid_cloud_auth": "Tuya rejected the project credentials. Check that the Access ID and the Access Secret belong to the same project (Overview) and that your app account is linked.",
       "cloud_not_linked": "The project has no permission over the device. Link your Tuya app account in the IoT panel (Devices → Link Tuya App account).",
       "cloud_device_not_found": "The device does not appear in that Tuya account or it has no local key.",
       "cloud_error": "Unexpected error talking to Tuya Cloud. Try again later."

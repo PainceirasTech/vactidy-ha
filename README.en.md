@@ -6,7 +6,7 @@ talks to the robot directly over your own wifi.
 
 [Español](README.md) · [Galego](README.gl.md)
 
-> **Status:** v0.1.1. Tested on a **Vactidy Cleanova W15** (`productId` `ut96oplbcckfxwwu`,
+> **Status:** v0.1.2. Tested on a **Vactidy Cleanova W15** (`productId` `ut96oplbcckfxwwu`,
 > firmware `40.00`, protocol `2.2`), whose data point map almost matches the Proscenic M9.
 
 ---

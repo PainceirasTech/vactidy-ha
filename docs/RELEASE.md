@@ -1,42 +1,39 @@
-# v0.1.1
+# v0.1.2 — alta mucho más corta
 
-Integración local para robots aspiradores Vactidy basados en Tuya 3.3, probada sobre un
-**Cleanova W15**.
+Todo el trabajo de esta versión está en el momento de dar de alta el robot.
 
-Esta versión no añade funciones nuevas: corrige todo lo que impedía publicar la integración
-en el catálogo de Home Assistant y actualiza la documentación.
+## Incluye
 
-## Correcciones
+- **La región de Tuya se detecta sola.** Ya no hay que recordar si el proyecto se creó
+  en EU, US, CN o IN: la integración prueba los cuatro centros de datos y usa el que
+  responde. Elegir mal la región producía el mismo error que una contraseña incorrecta.
+- **Selector de robot.** Después de autenticar, la integración lista los dispositivos de
+  la cuenta y se elige el robot de un desplegable. La clave local se rellena sola, así
+  que ya no hay que copiarla ni escribir el identificador.
+- **Enlaces en el formulario.** La ayuda del paso de Tuya Cloud incluye enlaces directos
+  a `iot.tuya.com`, con los cuatro pasos numerados.
+- **Descubrimiento local con más margen.** El robot tarda en contestar a la difusión;
+  antes se abandonaba a los 3 segundos y ahora se espera 6.
+- **Mensaje de error más claro** cuando Tuya rechaza las credenciales: indica que el
+  Access ID y el Access Secret deben ser del mismo proyecto y que la cuenta de la app
+  tiene que estar vinculada.
 
-- **Imágenes de marca**: se añaden `brand/icon.png` y `brand/logo.png`, que el catálogo
-  exige para mostrar la integración.
-- **Manifiesto**: se retira `requirements: cryptography`, porque ya es dependencia del
-  propio Home Assistant y declararla puede provocar conflictos de versión.
-- **Traducciones**: la potencia de succión se declara ahora con la estructura que valida
-  Home Assistant (`entity.vacuum.vacuum.state_attributes.fan_speed.state`), y la entidad
-  declara su `translation_key`.
-- **Validación continua**: los flujos de trabajo solo se ejecutan en `push` a `main`,
-  `pull_request` y una vez al día, en lugar de dos veces por cada commit.
+## Instalación
 
-## Documentación
-
-- Los tres README (español, inglés y gallego) explican el **Marketplace** como vía
-  principal, disponible de serie desde Home Assistant 2026.11, y reservan el nombre HACS
-  para versiones anteriores.
-- Guía paso a paso pensada para quien nunca ha instalado una integración: sin terminal,
-  sin conocimientos previos, con una tabla de problemas frecuentes.
+Marketplace → Integraciones → Vactidy → **Actualizar** (o *Redownload* si aún usas el
+repositorio personalizado). Después, reinicia Home Assistant.
 
 ## Requisitos
 
 - Home Assistant 2024.11 o superior.
 - El robot y Home Assistant en la misma red local.
-- La clave local del dispositivo (16 caracteres).
+- La clave local del dispositivo, o las credenciales de un proyecto de Tuya IoT.
 
 ## Limitaciones conocidas
 
 - Mapas y limpieza por zonas sin implementar: los data points 14 y 16 están identificados
   pero su formato binario no está documentado.
-- El descubrimiento depende de la difusión UDP; en redes que la bloquean hay que escribir
+- El descubrimiento depende de la difusión UDP. En redes que la bloquean hay que escribir
   la IP y el identificador a mano.
-- Solo probado con el mapa de data points del W15, que coincide con el del Proscenic M9.
-  Otros modelos pueden no funcionar; la integración lo detecta y lo avisa.
+- Tuya no permite leer las credenciales del proyecto sin iniciar sesión en su panel, así
+  que el Access ID y el Access Secret hay que copiarlos una vez.

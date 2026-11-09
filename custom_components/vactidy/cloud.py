@@ -126,6 +126,96 @@ async def _request(
     return result if isinstance(result, dict) else {}
 
 
+async def _token(
+    session: aiohttp.ClientSession,
+    base: str,
+    client_id: str,
+    client_secret: str,
+) -> dict[str, Any]:
+    """Pide un token de acceso al proyecto."""
+    token = await _request(
+        session,
+        base,
+        client_id,
+        client_secret,
+        "GET",
+        "/v1.0/token?grant_type=1",
+    )
+    if not token.get("access_token"):
+        raise CloudAuthError("Tuya no devolvió un token de acceso")
+    return token
+
+
+async def async_list_devices(
+    client_id: str,
+    client_secret: str,
+    region: str,
+) -> list[dict[str, Any]]:
+    """Devuelve todos los dispositivos de la cuenta vinculada al proyecto.
+
+    Incluye la clave local cuando Tuya la entrega, que es lo habitual para un
+    dispositivo con la app vinculada y permisos de lectura.
+    """
+    base = REGIONS.get(region.lower())
+    if base is None:
+        raise CloudError(f"Región desconocida: {region}")
+
+    async with aiohttp.ClientSession() as session:
+        token = await _token(session, base, client_id, client_secret)
+        uid = token.get("uid")
+        if not uid:
+            raise CloudError("Tuya no devolvió el identificador de la cuenta")
+        result = await _request(
+            session,
+            base,
+            client_id,
+            client_secret,
+            "GET",
+            f"/v1.0/users/{uid}/devices",
+            access_token=token["access_token"],
+        )
+
+    devices = result.get("devices")
+    if not isinstance(devices, list):
+        return []
+    return [dev for dev in devices if isinstance(dev, dict) and dev.get("id")]
+
+
+async def async_find_devices(
+    client_id: str,
+    client_secret: str,
+    preferred_region: str = "eu",
+) -> tuple[str, list[dict[str, Any]]]:
+    """Busca en qué centro de datos vive el proyecto.
+
+    El usuario rara vez recuerda si creó el proyecto en EU, US, CN o IN y elegir
+    mal produce el mismo error que unas credenciales incorrectas.  Se prueba la
+    región elegida primero y luego el resto; en cuanto una responde se devuelve.
+    """
+    order = [preferred_region.lower()]
+    order += [code for code in REGIONS if code not in order]
+
+    last_error: CloudError | None = None
+    for region in order:
+        try:
+            devices = await async_list_devices(client_id, client_secret, region)
+        except CloudAuthError as err:
+            # Puede ser una región equivocada: se sigue probando.
+            last_error = err
+            continue
+        except CloudError as err:
+            # Problema de red o de permisos: no tiene sentido seguir probando.
+            raise err
+        _LOGGER.debug(
+            "El proyecto de Tuya está en la región %s (%d dispositivos)",
+            region,
+            len(devices),
+        )
+        return region, devices
+
+    raise last_error or CloudAuthError("Ninguna región aceptó las credenciales")
+
+
 async def async_get_local_key(
     client_id: str,
     client_secret: str,
@@ -138,18 +228,7 @@ async def async_get_local_key(
         raise CloudError(f"Región desconocida: {region}")
 
     async with aiohttp.ClientSession() as session:
-        token = await _request(
-            session,
-            base,
-            client_id,
-            client_secret,
-            "GET",
-            "/v1.0/token?grant_type=1",
-        )
-        access_token = token.get("access_token")
-        if not access_token:
-            raise CloudAuthError("Tuya no devolvió un token de acceso")
-
+        token = await _token(session, base, client_id, client_secret)
         device = await _request(
             session,
             base,
@@ -157,7 +236,7 @@ async def async_get_local_key(
             client_secret,
             "GET",
             f"/v1.0/devices/{device_id}",
-            access_token=access_token,
+            access_token=token["access_token"],
         )
 
     local_key = device.get("local_key")

@@ -6,7 +6,7 @@ Home Assistant se conecta directamente al robot por tu red wifi.
 
 [English](README.en.md) · [Galego](README.gl.md)
 
-> **Estado:** v0.1.1. Probado sobre un **Vactidy Cleanova W15** (`productId`
+> **Estado:** v0.1.2. Probado sobre un **Vactidy Cleanova W15** (`productId`
 > `ut96oplbcckfxwwu`, firmware `40.00`, protocolo `2.2`), cuyo mapa de data points
 > coincide casi por completo con el Proscenic M9.
 

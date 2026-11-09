@@ -6,7 +6,7 @@ fabricante: Home Assistant fala co robot directamente pola túa rede wifi.
 
 [Español](README.md) · [English](README.en.md)
 
-> **Estado:** v0.1.1. Probado nun **Vactidy Cleanova W15** (`productId`
+> **Estado:** v0.1.2. Probado nun **Vactidy Cleanova W15** (`productId`
 > `ut96oplbcckfxwwu`, firmware `40.00`, protocolo `2.2`), cuxo mapa de data points
 > coincide case por completo co Proscenic M9.
 

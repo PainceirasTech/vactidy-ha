@@ -32,16 +32,22 @@
       },
       "cloud": {
         "title": "Obtener la clave de Tuya Cloud",
-        "description": "Usa las credenciales de tu propio proyecto de Tuya IoT. La clave se lee una sola vez, durante el alta, y se guarda únicamente en tu Home Assistant.\n\nLa región tiene que coincidir con la del proyecto.",
+        "description": "La clave local es un secreto de fábrica: solo la conoce Tuya, y se guarda únicamente en tu Home Assistant.\n\n1. Abre [iot.tuya.com](https://iot.tuya.com/cloud/) e inicia sesión.\n2. Ve a **Cloud → Development** y abre tu proyecto (créalo si no tienes).\n3. Copia **Access ID** y **Access Secret** de *Overview*.\n4. Comprueba que tu cuenta de la app está vinculada: *Devices → Link Tuya App account*.\n\nLa región se detecta automáticamente.",
         "data": {
           "client_id": "Access ID",
           "client_secret": "Access Secret",
-          "region": "Región",
-          "device_id": "ID del dispositivo"
+          "region": "Región"
         },
         "data_description": {
-          "client_id": "Está en iot.tuya.com → Cloud → tu proyecto → Overview.",
-          "client_secret": "Está junto al Access ID, en el mismo panel."
+          "client_id": "Overview de tu proyecto en [iot.tuya.com](https://iot.tuya.com/cloud/).",
+          "client_secret": "Junto al Access ID, en el mismo panel."
+        }
+      },
+      "cloud_device": {
+        "title": "Elige el robot",
+        "description": "Robots encontrados en tu cuenta de Tuya (región {region}). Elige el que quieres añadir.",
+        "data": {
+          "device": "Robot"
         }
       }
     },
@@ -50,7 +56,7 @@
       "invalid_auth": "La clave local ha sido rechazada. Revisa la clave y la versión del protocolo.",
       "unknown": "Error inesperado.",
       "unsupported_device": "El dispositivo respondió, pero no informa los puntos de datos esperados. Probablemente sea otro modelo de robot.",
-      "invalid_cloud_auth": "Tuya ha rechazado las credenciales del proyecto.",
+      "invalid_cloud_auth": "Tuya ha rechazado las credenciales del proyecto. Comprueba que el Access ID y el Access Secret son del mismo proyecto (Overview) y que tu cuenta de la app está vinculada.",
       "cloud_not_linked": "El proyecto no tiene permiso sobre el dispositivo. Vincula tu cuenta de la app Tuya en el panel IoT (Devices → Link Tuya App account).",
       "cloud_device_not_found": "El dispositivo no aparece en esa cuenta de Tuya o no tiene clave local.",
       "cloud_error": "Error inesperado al hablar con Tuya Cloud. Inténtalo más tarde."
