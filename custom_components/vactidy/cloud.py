@@ -170,7 +170,8 @@ async def async_list_devices(
         uid = token.get("uid")
         if not uid:
             raise CloudError("Tuya no devolvió el identificador de la cuenta")
-        result = await _request(
+
+        propios = await _request(
             session,
             base,
             client_id,
@@ -180,10 +181,36 @@ async def async_list_devices(
             access_token=token["access_token"],
         )
 
-    devices = result.get("devices")
-    if not isinstance(devices, list):
-        return []
-    return [dev for dev in devices if isinstance(dev, dict) and dev.get("id")]
+        # Un robot de marca blanca no se puede vincular al proyecto desde su app,
+        # pero si el usuario lo comparte a una cuenta de Tuya Smart o Smart Life,
+        # aparece en este listado. Tuya lo llama "sharing" y sí trae la local_key.
+        try:
+            respuesta = await _request(
+                session,
+                base,
+                client_id,
+                client_secret,
+                "GET",
+                f"/v1.0/users/{uid}/devices?from=sharing",
+                access_token=token["access_token"],
+            )
+        except CloudError:
+            # El listado de compartidos es opcional: si Tuya lo rechaza seguimos
+            # con los dispositivos propios en lugar de romper el flujo entero.
+            respuesta = {}
+
+    encontrados: dict[str, dict[str, Any]] = {}
+    for origen in (propios.get("devices"), respuesta.get("devices")):
+        if not isinstance(origen, list):
+            continue
+        for dev in origen:
+            if not isinstance(dev, dict) or not dev.get("id"):
+                continue
+            previo = encontrados.get(dev["id"])
+            # Nos quedamos con la ficha que traiga la clave local.
+            if previo is None or (not previo.get("local_key") and dev.get("local_key")):
+                encontrados[dev["id"]] = dev
+    return list(encontrados.values())
 
 
 async def async_detect_region(
