@@ -198,6 +198,12 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
         Solo se piden las credenciales del proyecto.  La región se detecta sola,
         porque elegir mal el centro de datos produce el mismo error que una
         contraseña incorrecta y es un tropiezo muy habitual.
+
+        Aviso importante: el listado solo devuelve dispositivos cuando la app
+        del robot está vinculada al proyecto, y eso únicamente lo permiten las
+        apps de Tuya (Tuya Smart o Smart Life).  Las apps de marca blanca, como
+        la de Vactidy, no tienen ese escáner.  Por eso el identificador se puede
+        escribir a mano: con la clave local del propio robot basta.
         """
         errors: dict[str, str] = {}
         schema = vol.Schema(
@@ -226,7 +232,10 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
                 region = await async_detect_region(
                     client_id, client_secret, user_input["region"]
                 )
-            except CloudAuthError:
+            except CloudAuthError as err:
+                # Firma o credenciales rechazadas: el texto real de Tuya
+                # («sign invalid») ahorra muchas vueltas.
+                self._detail = str(err)
                 errors["base"] = "invalid_cloud_auth"
             except CloudPermissionError as err:
                 self._detail = str(err)
@@ -238,15 +247,17 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
                 self._cloud_region = region
                 self._cloud_client_id = client_id
                 self._cloud_client_secret = client_secret
+                list_failed = False
                 try:
                     devices = await async_list_devices(
                         client_id, client_secret, region
                     )
                 except CloudError as err:
-                    # El listado exige un permiso que no todos los proyectos
-                    # tienen.  No es fatal: se puede ir por el identificador.
+                    # El listado exige que la app esté vinculada al proyecto.
+                    # No es fatal: se puede ir por el identificador a mano.
                     _LOGGER.warning("Tuya no devolvió el listado: %s", err)
                     self._detail = str(err)
+                    list_failed = True
                     devices = []
                 self._cloud_devices = devices
 
@@ -269,6 +280,10 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
                     else:
                         self._cloud_device_id = manual_id
                         return await self.async_step_local()
+                elif list_failed:
+                    # No es que falten dispositivos: es que Tuya no dejó
+                    # consultarlos.  Mostrar «no aparece» aquí confunde.
+                    errors["base"] = "cloud_error"
                 else:
                     errors["base"] = "cloud_device_not_found"
 

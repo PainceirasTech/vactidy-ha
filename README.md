@@ -6,7 +6,7 @@ Home Assistant se conecta directamente al robot por tu red wifi.
 
 [English](README.en.md) · [Galego](README.gl.md)
 
-> **Estado:** v0.1.3. Probado sobre un **Vactidy Cleanova W15** (`productId`
+> **Estado:** v0.1.4. Probado sobre un **Vactidy Cleanova W15** (`productId`
 > `ut96oplbcckfxwwu`, firmware `40.00`, protocolo `2.2`), cuyo mapa de data points
 > coincide casi por completo con el Proscenic M9.
 
@@ -108,10 +108,46 @@ su IP y su identificador en el texto de arriba; si no, no pasa nada, se escriben
 
 ## Paso 5 · Conseguir la clave local
 
-La **clave local** es un texto de 16 caracteres que el robot usa para cifrar la
-comunicación. La asigna el fabricante y no cambia nunca. Hay dos maneras de obtenerla.
+La **clave local** es un texto de 16 caracteres con el que el robot cifra la
+comunicación. La asigna el fabricante y no cambia nunca. Sin ella no hay forma de hablar
+con el robot: es la única pieza que no se puede adivinar.
 
-### Opción A · Pedírsela a Tuya (recomendado, sin terminal)
+Hay tres caminos. Elige el que encaje contigo.
+
+### Camino 1 · Ya la tienes
+
+Si alguien te la ha pasado (por ejemplo, quien te instaló la integración), salta al
+paso 6.
+
+### Camino 2 · Mover el robot a Tuya Smart o Smart Life
+
+Este robot es Tuya por dentro aunque su app se llame Vactidy. Las apps de marca blanca
+**no dejan vincular la cuenta a un proyecto de Tuya**: el único código QR que ofrecen es
+para añadir miembros al hogar. Las apps oficiales de Tuya sí lo permiten.
+
+1. Instala **Tuya Smart** o **Smart Life** y crea una cuenta en tu misma región.
+2. En la app de Vactidy, elimina el robot (*ajustes del robot → quitar dispositivo*). Un
+   dispositivo Tuya solo puede estar en una cuenta a la vez.
+3. Añade el robot en Tuya Smart igual que la primera vez (Wi-Fi de 2,4 GHz). La
+   configuración que guarda el robot, mapas incluidos, vive en el propio robot y no en la
+   app, así que lo normal es que siga ahí.
+4. Sigue la **Opción A** de aquí abajo para pedir la clave desde Home Assistant.
+
+Si no quieres tocar la app, ve al camino 3.
+
+### Camino 3 · Extraerla del móvil, sin cambiar de app
+
+La app guarda la clave en un fichero interno. Solo se puede leer con acceso al
+almacenamiento de la aplicación: un Android con root o una copia de seguridad completa.
+
+1. En un Android con root, abre `shared_prefs/spUtils.xml` dentro de
+   `/data/data/<paquete de la app>/`.
+2. Dentro hay un JSON con `"localKey":"..."`. Esos 16 caracteres son la clave.
+
+No funciona en iPhone ni en Android sin root. Si no puedes, el camino 2 es la
+alternativa.
+
+### Opción A · Pedírsela a Tuya (solo con Tuya Smart o Smart Life)
 
 Solo hace falta una cuenta gratuita de desarrollador y vincular la app del móvil.
 
@@ -123,42 +159,17 @@ Solo hace falta una cuenta gratuita de desarrollador y vincular la app del móvi
    - *Data Center*: **Central Europe** si estás en España.
 3. Abre el proyecto recién creado y apunta el **Access ID** y el **Access Secret** de la
    pestaña *Overview*. Son las credenciales que te pedirá la integración.
-4. Dentro del proyecto, ve a **Devices → Link Tuya App account → Add App Account**.
-   **Ojo: esto se hace en la web**, en el panel de Tuya, no en la app del móvil. Aparece un
-   código QR.
-5. En el móvil, abre la app con la que controlas el robot (**Vactidy**, **Tuya Smart** o
-   **Smart Life**) → pestaña *Yo* → icono de escaneo (arriba a la derecha) → escanea el QR
-   → confirma.
-6. Vuelve a **Devices** en la web: tu robot aparece en la lista. Ya está vinculado.
+4. En el menú del proyecto, **Devices → Link Tuya App account → Add App Account**. Este
+   paso se hace en la web, no en la app: aparece un código QR.
+5. En el móvil, abre **Tuya Smart** o **Smart Life** → pestaña *Yo* → icono de escaneo →
+   escanea el QR → confirma.
+6. Vuelve a **Devices**: tu robot aparece en la lista. Ya está vinculado.
 
 Ahora, en Home Assistant:
 
 1. Elige **Obtenerla de Tuya Cloud** en el menú de la integración.
-2. Rellena:
-
-   | Campo | Qué poner |
-   | --- | --- |
-   | Access ID | El del paso 3 |
-   | Access Secret | El del paso 3 |
-   | Región | `EU` (Central Europe) |
-   | Identificador | Déjalo vacío salvo que tengas varios robots |
-
-3. Pulsa **Enviar**. La integración pide la clave a Tuya, la rellena y te lleva al
-   formulario final.
-
-Las credenciales **no se guardan**: se usan una vez y se descartan.
-
-### Opción B · Ya tengo la clave local
-
-Si la tienes (porque la guardaste al instalarla, o porque la sacaste de la app), elige
-**Ya tengo la clave local** y pégala. Fin.
-
-### Opción C · A mano, para quien quiera el dato físico
-
-Si prefieres no dar credenciales a nadie y tienes acceso al móvil donde está vinculado el
-robot, la clave se puede extraer de los datos de la propia app. Requiere un móvil Android
-con depuración USB y un programa de terminal: es la vía de la documentación antigua y solo
-la recomendamos si las otras dos fallan.
+2. Rellena Access ID, Access Secret y la región, y pulsa enviar.
+3. Si el robot aparece, se rellena solo. Si no, escribe su identificador a mano.
 
 ## Paso 6 · Terminar y comprobar
 

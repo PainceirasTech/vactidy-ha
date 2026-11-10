@@ -6,7 +6,7 @@ talks to the robot directly over your own wifi.
 
 [Español](README.md) · [Galego](README.gl.md)
 
-> **Status:** v0.1.3. Tested on a **Vactidy Cleanova W15** (`productId` `ut96oplbcckfxwwu`,
+> **Status:** v0.1.4. Tested on a **Vactidy Cleanova W15** (`productId` `ut96oplbcckfxwwu`,
 > firmware `40.00`, protocol `2.2`), whose data point map almost matches the Proscenic M9.
 
 ---
@@ -106,54 +106,65 @@ will see its IP and identifier in the text above; if not, that is fine, you can 
 ## Step 5 · Get the local key
 
 The **local key** is a 16-character string the robot uses to encrypt its traffic. The
-factory assigns it and it never changes. There are two ways to get it.
+factory sets it and it never changes. Without it there is no way to talk to the robot: it
+is the one piece that cannot be guessed.
 
-### Option A · Ask Tuya for it (recommended, no terminal)
+There are three routes. Pick the one that suits you.
 
-All you need is a free developer account and to link the phone app.
+### Route 1 · You already have it
 
-1. Go to <https://iot.tuya.com> and create an account (free, no card needed).
+If someone gave it to you (the person who installed the integration, for instance), skip
+to step 6.
+
+### Route 2 · Move the robot to Tuya Smart or Smart Life
+
+This robot is Tuya inside even though its app is called Vactidy. Branded apps **do not
+allow linking the account to a Tuya project**: the only QR code they offer is for adding
+household members. Tuya's own apps do.
+
+1. Install **Tuya Smart** or **Smart Life** and create an account in your region.
+2. In the Vactidy app, remove the robot (*robot settings → remove device*). A Tuya device
+   can only live in one account at a time.
+3. Add the robot in Tuya Smart the usual way (2.4 GHz Wi-Fi). The settings the robot
+   keeps, maps included, live on the robot itself and not in the app, so they normally
+   stay.
+4. Follow **Option A** below to ask Home Assistant for the key.
+
+If you would rather not touch the app, go to route 3.
+
+### Route 3 · Extract it from the phone, without changing app
+
+The app stores the key in an internal file. It can only be read with access to the app's
+storage: a rooted Android or a full backup.
+
+1. On a rooted Android, open `shared_prefs/spUtils.xml` inside `/data/data/<app
+   package>/`.
+2. It contains a JSON with `"localKey":"..."`. Those 16 characters are the key.
+
+It does not work on iPhone or on Android without root. If you cannot, route 2 is the
+alternative.
+
+### Option A · Ask Tuya (Tuya Smart or Smart Life only)
+
+You only need a free developer account and to link the phone app.
+
+1. Sign in at <https://iot.tuya.com> and create an account (free, no card needed).
 2. In the side menu, **Cloud → Project Management**, then **Create Cloud Project**.
-   - Name: whatever you like.
    - *Industry*: Smart Home.
    - *Development Method*: Smart Home.
    - *Data Center*: **Central Europe** if you are in Spain.
-3. Open the project you just created and note the **Access ID** and **Access Secret** on
-   the *Overview* tab. These are the credentials the integration will ask for.
-4. Inside the project, go to **Devices → Link Tuya App account → Add App Account**.
-   **Note: this is done on the website**, in the Tuya panel, not in the phone app. A QR
-   code appears.
-5. On your phone, open the app you use for the robot (**Vactidy**, **Tuya Smart** or
-   **Smart Life**) → *Me* tab → scan icon (top right) → scan the QR code → confirm.
-6. Back in **Devices** on the website: your robot appears in the list. It is now linked.
+3. Open the project and copy the **Access ID** and **Access Secret** from *Overview*.
+4. In the project menu, **Devices → Link Tuya App account → Add App Account**. This is
+   done on the website, not in the app: a QR code appears.
+5. On the phone, open **Tuya Smart** or **Smart Life** → *Me* tab → scan icon → scan the
+   QR → confirm.
+6. Back in **Devices**: the robot is listed. It is linked.
 
-Now, in Home Assistant:
+Now in Home Assistant:
 
 1. Choose **Get it from Tuya Cloud** in the integration menu.
-2. Fill in:
-
-   | Field | What to enter |
-   | --- | --- |
-   | Access ID | From step 3 |
-   | Access Secret | From step 3 |
-   | Region | `EU` (Central Europe) |
-   | Device ID | Leave empty unless you own several robots |
-
-3. Press **Submit**. The integration asks Tuya for the key, fills the form and takes you to
-   the final screen.
-
-The credentials are **not stored**: they are used once and discarded.
-
-### Option B · You already have the local key
-
-If you have it, choose **I already have the local key**, paste it and you are done.
-
-### Option C · By hand, for the curious
-
-If you would rather not hand over any credentials and you have the phone the robot is linked
-to, the key can be extracted from the app's own data. It needs an Android phone with USB
-debugging and a terminal program: this is the old documentation route and we only recommend
-it if the other two fail.
+2. Fill in the Access ID, the Access Secret and the region, then submit.
+3. If the robot shows up it fills itself in. If not, type its ID by hand.
 
 ## Step 6 · Finish and check
 

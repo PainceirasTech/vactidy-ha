@@ -58,15 +58,19 @@ def _sign(
     client_id: str,
     client_secret: str,
     timestamp: str,
-    nonce: str,
     method: str,
     path: str,
     body: str = "",
 ) -> str:
-    """Firma HMAC-SHA256 que exige la API de Tuya."""
+    """Firma HMAC-SHA256 que exige la API de Tuya.
+
+    El texto que se firma es ``client_id + t + método + hash del cuerpo + ruta``.
+    El ``nonce`` viaja en la cabecera pero **no** entra en la firma: incluirlo
+    hace que Tuya responda ``sign invalid`` (código 1004).
+    """
     content_hash = hashlib.sha256(body.encode()).hexdigest()
     string_to_sign = f"{method}\n{content_hash}\n\n{path}"
-    payload = f"{client_id}{timestamp}{nonce}{string_to_sign}"
+    payload = f"{client_id}{timestamp}{string_to_sign}"
     return hmac.new(
         client_secret.encode(), payload.encode(), hashlib.sha256
     ).hexdigest().upper()
@@ -88,11 +92,12 @@ async def _request(
     headers = {
         "client_id": client_id,
         "sign": _sign(
-            client_id, client_secret, timestamp, nonce, method, path
+            client_id, client_secret, timestamp, method, path
         ),
         "t": timestamp,
         "sign_method": "HMAC-SHA256",
         "nonce": nonce,
+        "mode": "cors",
     }
     if access_token:
         headers["access_token"] = access_token

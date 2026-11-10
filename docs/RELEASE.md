@@ -1,38 +1,44 @@
-# v0.1.3 — correcciones del alta con Tuya Cloud
+# v0.1.4 — la vía Tuya Cloud, arreglada y explicada
 
-## Correcciones
+## Corrección importante
 
-- **Las traducciones ya no contienen direcciones web.** Hassfest lo prohíbe en los
-  textos de la interfaz; ahora las rutas del panel se explican en texto y los enlaces
-  quedan en la documentación. Esto desbloquea la validación del repositorio.
-- **Ruta correcta del panel de Tuya.** La sección se llama **Cloud → Project
-  Management**, no «Development». Corregido en el formulario y en los tres README.
-- **Se aclara dónde se vincula la app.** El vínculo se hace en el panel web, dentro del
-  proyecto: *Devices → Link Tuya App account*. El código QR que aparece se escanea con
-  la app Vactidy del móvil; esa opción no existe dentro de la app.
-- **Diagnóstico visible.** Si Tuya devuelve un error, el formulario muestra el código y
-  el mensaje exactos en lugar de un aviso genérico.
-- **El listado de robots ya no es obligatorio.** Algunos proyectos no tienen permiso
-  para listar dispositivos; en ese caso se puede escribir el identificador del robot y
-  la clave se pide directamente.
+**La firma de las peticiones a Tuya Cloud estaba mal.** Se incluía el `nonce` dentro del
+texto firmado, y Tuya exige `client_id + t + método + hash del cuerpo + ruta`. Consecuencia:
+cualquier credencial correcta era rechazada con `sign invalid` (código 1004). Corregido y
+verificado contra el algoritmo de referencia.
+
+## Mensajes de error honestos
+
+Antes, un fallo de autenticación acababa mostrando «el dispositivo no aparece en esa
+cuenta de Tuya», que era falso y despistaba. Ahora cada caso tiene su mensaje:
+
+- `sign invalid` → credenciales o reloj del sistema.
+- listado sin permiso → error de Tuya con su texto real.
+- dispositivo inexistente → solo cuando de verdad no aparece.
+
+## La verdad sobre las apps de marca blanca
+
+El robot es Tuya por dentro, pero **la app de Vactidy no se puede vincular a un proyecto de
+Tuya**: el único código QR que ofrece es para añadir miembros al hogar. Solo las apps
+oficiales de Tuya (Tuya Smart y Smart Life) entienden el QR de *Devices → Link Tuya App
+account*.
+
+Por eso la vía Cloud ahora lo dice en la primera línea del formulario y remite a la vía
+manual. Se documentan los tres caminos reales para conseguir la clave local:
+
+1. **Ya tenerla.**
+2. **Mover el robot a Tuya Smart o Smart Life** y vincular la cuenta al proyecto. Es el
+   camino que funciona sin root, a cambio de dejar de usar la app de Vactidy.
+3. **Extraerla del móvil** (`shared_prefs/spUtils.xml`), con root o copia de seguridad.
 
 ## Instalación
 
-Marketplace → Integraciones → Vactidy → **Actualizar** (o *Redownload*). Después,
-reinicia Home Assistant.
-
-## Requisitos
-
-- Home Assistant 2024.11 o superior.
-- El robot y Home Assistant en la misma red local.
-- La clave local del dispositivo, o las credenciales de un proyecto de Tuya IoT con la
-  cuenta de la app vinculada.
+Actualiza desde el Marketplace (o HACS) y reinicia Home Assistant.
 
 ## Limitaciones conocidas
 
 - Mapas y limpieza por zonas sin implementar: los data points 14 y 16 están identificados
   pero su formato binario no está documentado.
-- El descubrimiento depende de la difusión UDP. En redes que la bloquean hay que escribir
-  la IP y el identificador a mano.
-- Tuya no permite leer las credenciales del proyecto sin iniciar sesión en su panel, así
-  que el Access ID y el Access Secret hay que copiarlos una vez.
+- El descubrimiento depende de la difusión UDP; donde esté bloqueada hay que escribir la IP
+  y el identificador a mano.
+- Solo probado con el mapa de data points del W15, que coincide con el del Proscenic M9.

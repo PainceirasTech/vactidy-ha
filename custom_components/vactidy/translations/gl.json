@@ -6,7 +6,7 @@
         "description": "Robot detectado: {detected}\n\nComo queres obter a clave local?",
         "menu_options": {
           "local": "Xa teño a clave local",
-          "cloud": "Obtela de Tuya Cloud"
+          "cloud": "Obtela de Tuya Cloud (solo Tuya Smart ou Smart Life)"
         }
       },
       "reconfigure": {
@@ -31,8 +31,8 @@
         }
       },
       "cloud": {
-        "title": "Obter a clave de Tuya Cloud",
-        "description": "A clave local é un segredo de fábrica: só a coñece Tuya, e gárdase unicamente no teu Home Assistant.\n\n1. Entra en **iot.tuya.com** e abre **Cloud → Project Management**.\n2. Abre o teu proxecto (créao coa industria *Smart Home* se non tes).\n3. Copia **Access ID** e **Access Secret** de *Overview*.\n4. Dentro do proxecto, abre **Devices → Link Tuya App account**, engade a conta e escanea o código coa app Vactidy.\n\nA rexión detéctase automaticamente.\n\n{detail}",
+        "title": "Obter a clave desde Tuya Cloud",
+        "description": "Este método **solo funciona se o robot está na app Tuya Smart ou Smart Life**. As apps de marca branca, como a de Vactidy, non se poden vincular a un proxecto de Tuya: só ofrecen un escáner para engadir membros ao fogar.\n\nSe usas a app de Vactidy, pecha este formulario e escolle *Xa teño a clave local*.\n\n1. Entra en **iot.tuya.com** e abre **Cloud → Project Management**.\n2. Abre o teu proxecto (crédalo con industria *Smart Home* se non tes).\n3. Copia **Access ID** e **Access Secret** de *Overview*.\n4. Dentro do proxecto, **Devices → Link Tuya App account**: engade a conta e escanea o código desde Tuya Smart ou Smart Life.\n\nA rexión detéctase automaticamente.\n\n{detail}",
         "data": {
           "client_id": "Access ID",
           "client_secret": "Access Secret",
@@ -42,7 +42,7 @@
         "data_description": {
           "client_id": "Está en *Overview* do proxecto (iot.tuya.com, Cloud → Project Management).",
           "client_secret": "Xunto ao Access ID, no mesmo panel.",
-          "device_id": "Só se non aparece a lista de robots."
+          "device_id": "Se o robot non aparece na lista, escribe aquí o seu identificador. Coa clave local non hai que vincular nada."
         }
       },
       "cloud_device": {
@@ -58,9 +58,9 @@
       "invalid_auth": "A clave local foi rexeitada. Revisa a clave e a versión do protocolo.",
       "unknown": "Erro inesperado.",
       "unsupported_device": "O dispositivo respondeu, pero non informa os puntos de datos agardados. Probablemente sexa outro modelo de robot.",
-      "invalid_cloud_auth": "Tuya rexeitou as credenciais do proxecto. Comproba que o Access ID e o Access Secret son do mesmo proxecto (Overview) e que a túa conta da app está vinculada.",
-      "cloud_not_linked": "O proxecto non ten permiso sobre o dispositivo. Vincula a túa conta da app Tuya no panel IoT (Devices → Link Tuya App account).",
-      "cloud_device_not_found": "O dispositivo non aparece nesa conta de Tuya ou non ten clave local.",
+      "invalid_cloud_auth": "Tuya rexeitou as credenciais ou a sinatura. Revisa o Access ID e o Access Secret (sen espazos de máis) e que a hora do sistema sexa correcta.",
+      "cloud_not_linked": "O proxecto non ten permiso sobre o dispositivo. Só funciona se a conta está vinculada desde Tuya Smart ou Smart Life.",
+      "cloud_device_not_found": "Ese identificador non aparece na conta de Tuya. Coa app de Vactidy é o normal: non se pode vincular.",
       "cloud_error": "Erro inesperado ao falar con Tuya Cloud. Inténtao máis tarde."
     },
     "abort": {
