@@ -181,39 +181,50 @@ async def async_list_devices(
     return [dev for dev in devices if isinstance(dev, dict) and dev.get("id")]
 
 
-async def async_find_devices(
+async def async_detect_region(
     client_id: str,
     client_secret: str,
     preferred_region: str = "eu",
-) -> tuple[str, list[dict[str, Any]]]:
-    """Busca en qué centro de datos vive el proyecto.
+) -> str:
+    """Averigua en qué centro de datos vive el proyecto.
 
-    El usuario rara vez recuerda si creó el proyecto en EU, US, CN o IN y elegir
+    El usuario rara vez recuerda si creó el proyecto en EU, US, CN o IN, y elegir
     mal produce el mismo error que unas credenciales incorrectas.  Se prueba la
-    región elegida primero y luego el resto; en cuanto una responde se devuelve.
+    región elegida primero y luego el resto; en cuanto una acepta el token, esa es.
     """
     order = [preferred_region.lower()]
     order += [code for code in REGIONS if code not in order]
 
     last_error: CloudError | None = None
     for region in order:
+        base = REGIONS.get(region)
+        if base is None:
+            continue
         try:
-            devices = await async_list_devices(client_id, client_secret, region)
+            async with aiohttp.ClientSession() as session:
+                await _token(session, base, client_id, client_secret)
         except CloudAuthError as err:
-            # Puede ser una región equivocada: se sigue probando.
             last_error = err
             continue
-        except CloudError as err:
-            # Problema de red o de permisos: no tiene sentido seguir probando.
-            raise err
-        _LOGGER.debug(
-            "El proyecto de Tuya está en la región %s (%d dispositivos)",
-            region,
-            len(devices),
-        )
-        return region, devices
+        except CloudError:
+            raise
+        _LOGGER.debug("El proyecto de Tuya está en la región %s", region)
+        return region
 
     raise last_error or CloudAuthError("Ninguna región aceptó las credenciales")
+
+
+async def async_find_devices(
+    client_id: str,
+    client_secret: str,
+    preferred_region: str = "eu",
+) -> tuple[str, list[dict[str, Any]]]:
+    """Detecta la región y devuelve los dispositivos de la cuenta."""
+    region = await async_detect_region(
+        client_id, client_secret, preferred_region
+    )
+    devices = await async_list_devices(client_id, client_secret, region)
+    return region, devices
 
 
 async def async_get_local_key(

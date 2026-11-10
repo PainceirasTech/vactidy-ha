@@ -32,15 +32,17 @@
       },
       "cloud": {
         "title": "Get the key from Tuya Cloud",
-        "description": "The local key is a factory secret: only Tuya knows it, and it is stored only in your Home Assistant.\n\n1. Open [iot.tuya.com](https://iot.tuya.com/cloud/) and sign in.\n2. Go to **Cloud → Development** and open your project (create one if you have none).\n3. Copy **Access ID** and **Access Secret** from *Overview*.\n4. Check that your Tuya app account is linked: *Devices → Link Tuya App account*.\n\nThe region is detected automatically.",
+        "description": "The local key is a factory secret: only Tuya knows it, and it is stored only in your Home Assistant.\n\n1. Sign in at **iot.tuya.com** and open **Cloud → Project Management**.\n2. Open your project (create one with industry *Smart Home* if you have none).\n3. Copy **Access ID** and **Access Secret** from *Overview*.\n4. Inside the project, open **Devices → Link Tuya App account**, add the account and scan the code with the Vactidy app.\n\nThe region is detected automatically.\n\n{detail}",
         "data": {
           "client_id": "Access ID",
           "client_secret": "Access Secret",
-          "region": "Region"
+          "region": "Region",
+          "device_id": "Robot ID (optional)"
         },
         "data_description": {
-          "client_id": "Overview of your project at [iot.tuya.com](https://iot.tuya.com/cloud/).",
-          "client_secret": "Next to the Access ID, in the same panel."
+          "client_id": "Found in *Overview* of the project (iot.tuya.com, Cloud → Project Management).",
+          "client_secret": "Next to the Access ID, in the same panel.",
+          "device_id": "Only if the list of robots does not appear."
         }
       },
       "cloud_device": {

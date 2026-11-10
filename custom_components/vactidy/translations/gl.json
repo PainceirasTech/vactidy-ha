@@ -32,15 +32,17 @@
       },
       "cloud": {
         "title": "Obter a clave de Tuya Cloud",
-        "description": "A clave local é un segredo de fábrica: só a coñece Tuya, e gárdase unicamente no teu Home Assistant.\n\n1. Abre [iot.tuya.com](https://iot.tuya.com/cloud/) e inicia sesión.\n2. Vai a **Cloud → Development** e abre o teu proxecto (créao se non tes).\n3. Copia **Access ID** e **Access Secret** de *Overview*.\n4. Comproba que a túa conta da app está vinculada: *Devices → Link Tuya App account*.\n\nA rexión detéctase automaticamente.",
+        "description": "A clave local é un segredo de fábrica: só a coñece Tuya, e gárdase unicamente no teu Home Assistant.\n\n1. Entra en **iot.tuya.com** e abre **Cloud → Project Management**.\n2. Abre o teu proxecto (créao coa industria *Smart Home* se non tes).\n3. Copia **Access ID** e **Access Secret** de *Overview*.\n4. Dentro do proxecto, abre **Devices → Link Tuya App account**, engade a conta e escanea o código coa app Vactidy.\n\nA rexión detéctase automaticamente.\n\n{detail}",
         "data": {
           "client_id": "Access ID",
           "client_secret": "Access Secret",
-          "region": "Rexión"
+          "region": "Rexión",
+          "device_id": "ID do robot (opcional)"
         },
         "data_description": {
-          "client_id": "Overview do teu proxecto en [iot.tuya.com](https://iot.tuya.com/cloud/).",
-          "client_secret": "Xunto ao Access ID, no mesmo panel."
+          "client_id": "Está en *Overview* do proxecto (iot.tuya.com, Cloud → Project Management).",
+          "client_secret": "Xunto ao Access ID, no mesmo panel.",
+          "device_id": "Só se non aparece a lista de robots."
         }
       },
       "cloud_device": {

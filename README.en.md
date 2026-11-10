@@ -6,7 +6,7 @@ talks to the robot directly over your own wifi.
 
 [Español](README.md) · [Galego](README.gl.md)
 
-> **Status:** v0.1.2. Tested on a **Vactidy Cleanova W15** (`productId` `ut96oplbcckfxwwu`,
+> **Status:** v0.1.3. Tested on a **Vactidy Cleanova W15** (`productId` `ut96oplbcckfxwwu`,
 > firmware `40.00`, protocol `2.2`), whose data point map almost matches the Proscenic M9.
 
 ---
@@ -108,23 +108,24 @@ will see its IP and identifier in the text above; if not, that is fine, you can 
 The **local key** is a 16-character string the robot uses to encrypt its traffic. The
 factory assigns it and it never changes. There are two ways to get it.
 
-### Option A · Ask Tuya (recommended, no terminal)
+### Option A · Ask Tuya for it (recommended, no terminal)
 
-You only need a free developer account and to link the phone app.
+All you need is a free developer account and to link the phone app.
 
 1. Go to <https://iot.tuya.com> and create an account (free, no card needed).
-2. In the side menu, **Cloud → Development**, then **Create Cloud Project**.
+2. In the side menu, **Cloud → Project Management**, then **Create Cloud Project**.
    - Name: whatever you like.
    - *Industry*: Smart Home.
    - *Development Method*: Smart Home.
-   - *Data Center*: **Central Europe** if you are in Europe.
-3. Open the new project and note the **Access ID** and **Access Secret** from the *Overview*
-   tab. These are the credentials the integration will ask for.
-4. In the project menu, **Devices → Link Tuya App account → Add App Account**. A QR code
-   appears.
-5. On your phone, open the **Tuya Smart** or **Smart Life** app (the one you use with the
-   robot) → *Me* tab → scan icon (top right) → scan the QR → confirm.
-6. Back in **Devices**, your robot is listed. It is linked.
+   - *Data Center*: **Central Europe** if you are in Spain.
+3. Open the project you just created and note the **Access ID** and **Access Secret** on
+   the *Overview* tab. These are the credentials the integration will ask for.
+4. Inside the project, go to **Devices → Link Tuya App account → Add App Account**.
+   **Note: this is done on the website**, in the Tuya panel, not in the phone app. A QR
+   code appears.
+5. On your phone, open the app you use for the robot (**Vactidy**, **Tuya Smart** or
+   **Smart Life**) → *Me* tab → scan icon (top right) → scan the QR code → confirm.
+6. Back in **Devices** on the website: your robot appears in the list. It is now linked.
 
 Now, in Home Assistant:
 

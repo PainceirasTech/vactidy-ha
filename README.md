@@ -6,7 +6,7 @@ Home Assistant se conecta directamente al robot por tu red wifi.
 
 [English](README.en.md) · [Galego](README.gl.md)
 
-> **Estado:** v0.1.2. Probado sobre un **Vactidy Cleanova W15** (`productId`
+> **Estado:** v0.1.3. Probado sobre un **Vactidy Cleanova W15** (`productId`
 > `ut96oplbcckfxwwu`, firmware `40.00`, protocolo `2.2`), cuyo mapa de data points
 > coincide casi por completo con el Proscenic M9.
 
@@ -116,18 +116,20 @@ comunicación. La asigna el fabricante y no cambia nunca. Hay dos maneras de obt
 Solo hace falta una cuenta gratuita de desarrollador y vincular la app del móvil.
 
 1. Entra en <https://iot.tuya.com> y crea una cuenta (es gratis; no hace falta tarjeta).
-2. En el menú lateral, **Cloud → Development**, y pulsa **Create Cloud Project**.
+2. En el menú lateral, **Cloud → Project Management**, y pulsa **Create Cloud Project**.
    - Nombre: el que quieras.
    - *Industry*: Smart Home.
    - *Development Method*: Smart Home.
    - *Data Center*: **Central Europe** si estás en España.
 3. Abre el proyecto recién creado y apunta el **Access ID** y el **Access Secret** de la
    pestaña *Overview*. Son las credenciales que te pedirá la integración.
-4. En el menú del proyecto, **Devices → Link Tuya App account → Add App Account**.
-   Aparece un código QR.
-5. En el móvil, abre la app **Tuya Smart** o **Smart Life** (la que uses con el robot) →
-   pestaña *Yo* → icono de escaneo (arriba a la derecha) → escanea el QR → confirma.
-6. Vuelve a **Devices**: tu robot aparece en la lista. Ya está vinculado.
+4. Dentro del proyecto, ve a **Devices → Link Tuya App account → Add App Account**.
+   **Ojo: esto se hace en la web**, en el panel de Tuya, no en la app del móvil. Aparece un
+   código QR.
+5. En el móvil, abre la app con la que controlas el robot (**Vactidy**, **Tuya Smart** o
+   **Smart Life**) → pestaña *Yo* → icono de escaneo (arriba a la derecha) → escanea el QR
+   → confirma.
+6. Vuelve a **Devices** en la web: tu robot aparece en la lista. Ya está vinculado.
 
 Ahora, en Home Assistant:
 

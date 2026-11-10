@@ -6,7 +6,7 @@ fabricante: Home Assistant fala co robot directamente pola túa rede wifi.
 
 [Español](README.md) · [English](README.en.md)
 
-> **Estado:** v0.1.2. Probado nun **Vactidy Cleanova W15** (`productId`
+> **Estado:** v0.1.3. Probado nun **Vactidy Cleanova W15** (`productId`
 > `ut96oplbcckfxwwu`, firmware `40.00`, protocolo `2.2`), cuxo mapa de data points
 > coincide case por completo co Proscenic M9.
 
@@ -116,18 +116,19 @@ Asínaa o fabricante e non cambia nunca. Hai dúas maneiras de obtela.
 Só fai falta unha conta gratuíta de desenvolvedor e vincular a app do móbil.
 
 1. Entra en <https://iot.tuya.com> e crea unha conta (é gratis; non fai falta tarxeta).
-2. No menú lateral, **Cloud → Development**, e pulsa **Create Cloud Project**.
+2. No menú lateral, **Cloud → Project Management**, e pulsa **Create Cloud Project**.
    - Nome: o que queiras.
    - *Industry*: Smart Home.
    - *Development Method*: Smart Home.
    - *Data Center*: **Central Europe** se estás en España.
 3. Abre o proxecto recentemente creado e apunta o **Access ID** e o **Access Secret** da
    pestana *Overview*. Son as credenciais que che pedirá a integración.
-4. No menú do proxecto, **Devices → Link Tuya App account → Add App Account**.
-   Aparece un código QR.
-5. No móbil, abre a app **Tuya Smart** ou **Smart Life** (a que uses co robot) →
-   pestana *Eu* → icona de escaneo (arriba á dereita) → escanea o QR → confirma.
-6. Volve a **Devices**: o teu robot aparece na lista. Xa está vinculado.
+4. Dentro do proxecto, vai a **Devices → Link Tuya App account → Add App Account**.
+   **Ollo: isto faise na web**, no panel de Tuya, non na app do móbil. Aparece un código QR.
+5. No móbil, abre a app coa que controlas o robot (**Vactidy**, **Tuya Smart** ou
+   **Smart Life**) → pestana *Eu* → icona de escaneo (arriba á dereita) → escanea o QR →
+   confirma.
+6. Volve a **Devices** na web: o teu robot aparece na lista. Xa está vinculado.
 
 Agora, en Home Assistant:
 

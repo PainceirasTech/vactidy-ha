@@ -22,8 +22,9 @@ from .cloud import (
     CloudDeviceNotFound,
     CloudError,
     CloudPermissionError,
-    async_find_devices,
+    async_detect_region,
     async_get_local_key,
+    async_list_devices,
 )
 from .const import (
     CONF_DEVICE_ID,
@@ -59,6 +60,7 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
         self._cloud_region = "eu"
         self._cloud_client_id = ""
         self._cloud_client_secret = ""
+        self._detail = ""
 
     # -- utilidades ---------------------------------------------------------
 
@@ -211,36 +213,64 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
                         mode=SelectSelectorMode.DROPDOWN,
                     )
                 ),
+                vol.Optional("device_id", default=""): str,
             }
         )
 
         if user_input is not None:
+            client_id = str(user_input["client_id"]).strip()
+            client_secret = str(user_input["client_secret"]).strip()
+            manual_id = str(user_input.get("device_id") or "").strip()
+            self._detail = ""
             try:
-                region, devices = await async_find_devices(
-                    client_id=user_input["client_id"].strip(),
-                    client_secret=user_input["client_secret"].strip(),
-                    preferred_region=user_input["region"],
+                region = await async_detect_region(
+                    client_id, client_secret, user_input["region"]
                 )
             except CloudAuthError:
                 errors["base"] = "invalid_cloud_auth"
-            except CloudPermissionError:
+            except CloudPermissionError as err:
+                self._detail = str(err)
                 errors["base"] = "cloud_not_linked"
-            except CloudDeviceNotFound:
-                errors["base"] = "cloud_device_not_found"
-            except CloudError:
+            except CloudError as err:
+                self._detail = str(err)
                 errors["base"] = "cloud_error"
             else:
-                if not devices:
-                    errors["base"] = "cloud_device_not_found"
-                else:
-                    self._cloud_region = region
-                    self._cloud_devices = devices
-                    self._cloud_client_id = user_input["client_id"].strip()
-                    self._cloud_client_secret = user_input["client_secret"].strip()
-                    if len(devices) == 1:
-                        self._select_cloud_device(devices[0])
-                        return await self.async_step_local()
+                self._cloud_region = region
+                self._cloud_client_id = client_id
+                self._cloud_client_secret = client_secret
+                try:
+                    devices = await async_list_devices(
+                        client_id, client_secret, region
+                    )
+                except CloudError as err:
+                    # El listado exige un permiso que no todos los proyectos
+                    # tienen.  No es fatal: se puede ir por el identificador.
+                    _LOGGER.warning("Tuya no devolvió el listado: %s", err)
+                    self._detail = str(err)
+                    devices = []
+                self._cloud_devices = devices
+
+                if len(devices) == 1:
+                    self._select_cloud_device(devices[0])
+                    return await self.async_step_local()
+                if len(devices) > 1:
                     return await self.async_step_cloud_device()
+
+                if manual_id:
+                    try:
+                        self._cloud_key = await async_get_local_key(
+                            client_id, client_secret, region, manual_id
+                        )
+                    except CloudDeviceNotFound:
+                        errors["base"] = "cloud_device_not_found"
+                    except CloudError as err:
+                        self._detail = str(err)
+                        errors["base"] = "cloud_error"
+                    else:
+                        self._cloud_device_id = manual_id
+                        return await self.async_step_local()
+                else:
+                    errors["base"] = "cloud_device_not_found"
 
         return self.async_show_form(
             step_id="cloud",
@@ -248,9 +278,7 @@ class VactidyConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
             description_placeholders={
                 "detected": self._detected_text(),
-                "device_id": (
-                    self._discovered.device_id if self._discovered else ""
-                ),
+                "detail": self._detail,
             },
         )
 

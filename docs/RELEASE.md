@@ -1,33 +1,32 @@
-# v0.1.2 — alta mucho más corta
+# v0.1.3 — correcciones del alta con Tuya Cloud
 
-Todo el trabajo de esta versión está en el momento de dar de alta el robot.
+## Correcciones
 
-## Incluye
-
-- **La región de Tuya se detecta sola.** Ya no hay que recordar si el proyecto se creó
-  en EU, US, CN o IN: la integración prueba los cuatro centros de datos y usa el que
-  responde. Elegir mal la región producía el mismo error que una contraseña incorrecta.
-- **Selector de robot.** Después de autenticar, la integración lista los dispositivos de
-  la cuenta y se elige el robot de un desplegable. La clave local se rellena sola, así
-  que ya no hay que copiarla ni escribir el identificador.
-- **Enlaces en el formulario.** La ayuda del paso de Tuya Cloud incluye enlaces directos
-  a `iot.tuya.com`, con los cuatro pasos numerados.
-- **Descubrimiento local con más margen.** El robot tarda en contestar a la difusión;
-  antes se abandonaba a los 3 segundos y ahora se espera 6.
-- **Mensaje de error más claro** cuando Tuya rechaza las credenciales: indica que el
-  Access ID y el Access Secret deben ser del mismo proyecto y que la cuenta de la app
-  tiene que estar vinculada.
+- **Las traducciones ya no contienen direcciones web.** Hassfest lo prohíbe en los
+  textos de la interfaz; ahora las rutas del panel se explican en texto y los enlaces
+  quedan en la documentación. Esto desbloquea la validación del repositorio.
+- **Ruta correcta del panel de Tuya.** La sección se llama **Cloud → Project
+  Management**, no «Development». Corregido en el formulario y en los tres README.
+- **Se aclara dónde se vincula la app.** El vínculo se hace en el panel web, dentro del
+  proyecto: *Devices → Link Tuya App account*. El código QR que aparece se escanea con
+  la app Vactidy del móvil; esa opción no existe dentro de la app.
+- **Diagnóstico visible.** Si Tuya devuelve un error, el formulario muestra el código y
+  el mensaje exactos en lugar de un aviso genérico.
+- **El listado de robots ya no es obligatorio.** Algunos proyectos no tienen permiso
+  para listar dispositivos; en ese caso se puede escribir el identificador del robot y
+  la clave se pide directamente.
 
 ## Instalación
 
-Marketplace → Integraciones → Vactidy → **Actualizar** (o *Redownload* si aún usas el
-repositorio personalizado). Después, reinicia Home Assistant.
+Marketplace → Integraciones → Vactidy → **Actualizar** (o *Redownload*). Después,
+reinicia Home Assistant.
 
 ## Requisitos
 
 - Home Assistant 2024.11 o superior.
 - El robot y Home Assistant en la misma red local.
-- La clave local del dispositivo, o las credenciales de un proyecto de Tuya IoT.
+- La clave local del dispositivo, o las credenciales de un proyecto de Tuya IoT con la
+  cuenta de la app vinculada.
 
 ## Limitaciones conocidas
 
