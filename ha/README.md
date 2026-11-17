@@ -29,6 +29,7 @@ Con el contenedor `homeassistant` en el Pi:
 docker exec -i homeassistant mkdir -p /config/scripts /config/www/vactidy
 docker cp vactidy_room.py homeassistant:/config/scripts/vactidy_room.py
 docker cp salon.txt homeassistant:/config/www/vactidy/salon.txt
+docker cp cocina.txt homeassistant:/config/www/vactidy/cocina.txt
 ```
 
 Si no tienes terminal a mano, vale cualquier editor de ficheros de Home
@@ -74,28 +75,38 @@ Alexa apareceran como escenas:
 Si prefieres una rutina con nombre natural, crea la rutina en la app de Alexa
 y que ejecute la escena.
 
-## Capturar otro mapa (cocina)
+## Mapas capturados
 
-Cada mapa tiene su propio `mapId` y su propio fichero. Para el segundo mapa:
+| Planta | Fichero | mapId | Tamaño |
+|---|---|---|---|
+| Salón (arriba) | `salon.txt` | 64542 | 58.824 B |
+| Cocina (abajo) | `cocina.txt` | 58757 | 107.418 B |
+
+Ambos se han probado contra el robot: responde `0x2f` con `ret=1` y se ve la
+descarga en el log del servidor (`192.168.5.210 "GET /cocina.txt" 200`).
+
+## Capturar otro mapa
+
+Cada mapa tiene su propio `mapId` y su propio fichero. Para un tercer mapa:
 
 1. Arranca la captura en el PC:
 
    ```powershell
    cd $env:TEMP\opencode
-   python -u frida_spawn.py hook_v5.js 600 2>&1 | Tee-Object -FilePath hook_v5.log
+   python -u frida_spawn.py hook_v5.js 900 2>&1 | Tee-Object -FilePath hook_nuevo.log
    ```
 
-2. En LDPlayer, abre el robot y pulsa **Mapa → Cocina → Aplicar**.
+2. En LDPlayer, abre el robot y pulsa **Mapa → <nombre> → Aplicar**.
 3. Extrae la URL y descarga el fichero:
 
    ```powershell
    cd $env:TEMP\opencode
-   python -u parse_map.py
+   python -u parse_map.py hook_nuevo.log nuevo
    ```
 
-   Deja `cocina.txt` en `tools/maps/` y apunta el `mapId` que imprime.
-4. Copia el fichero a `/config/www/vactidy/cocina.txt` y descomenta el bloque
-   `vactidy_limpiar_cocina` de `vactidy_maps.yaml` con el `mapId` real.
+   Deja `nuevo.txt` en `tools/maps/` e imprime el `mapId`.
+4. Copia el fichero a `/config/www/vactidy/nuevo.txt` y añade el bloque
+   correspondiente en `vactidy_maps.yaml` con el `mapId` real.
 
 ## Detalles que conviene saber
 
