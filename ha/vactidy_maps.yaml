@@ -1,61 +1,32 @@
 # Limpieza por mapa del Vactidy Cleanova W15 para Home Assistant.
 #
-# Instalacion (ver ha/README.md):
-#   1. Copiar tools/vactidy_room.py a /config/scripts/vactidy_room.py
-#   2. Copiar tools/maps/<mapa>.txt a /config/www/vactidy/
-#   3. Anadir las dos entradas `vactidy_device_id` y `vactidy_local_key` a secrets.yaml
-#   4. Incluir este fichero con `homeassistant: packages:` y reiniciar
+# Instalacion (ver ha/README.md, o ejecuta ha/instalar.sh dentro del contenedor).
 #
 # Cada mapa se sirve desde la propia instancia de Home Assistant, asi que no
 # depende de ningun PC encendido ni de la nube de Tuya.
+#
+# Nota: shell_command exige una CADENA, no una lista. Los argumentos se pasan
+# en una sola linea y las credenciales se leen de /config/scripts/vactidy.env.
 
 shell_command:
-  vactidy_limpiar_salon:
-    - python3
-    - /config/scripts/vactidy_room.py
-    - --host
-    - "192.168.5.210"
-    - --device-id
-    - !secret vactidy_device_id
-    - --local-key
-    - !secret vactidy_local_key
-    - --retries
-    - "6"
-    - --map
-    - "64542"
-    - --url
-    - "http://192.168.5.250:8123/local/vactidy/salon.txt"
-    - --auto
+  vactidy_limpiar_salon: >-
+    set -a; . /config/scripts/vactidy.env; set +a; exec python3
+    /config/scripts/vactidy_room.py --retries 6
+    --map 64542
+    --url http://192.168.5.250:8123/local/vactidy/salon.txt
+    --auto
 
-  vactidy_limpiar_cocina:
-    - python3
-    - /config/scripts/vactidy_room.py
-    - --host
-    - "192.168.5.210"
-    - --device-id
-    - !secret vactidy_device_id
-    - --local-key
-    - !secret vactidy_local_key
-    - --retries
-    - "6"
-    - --map
-    - "58757"
-    - --url
-    - "http://192.168.5.250:8123/local/vactidy/cocina.txt"
-    - --auto
+  vactidy_limpiar_cocina: >-
+    set -a; . /config/scripts/vactidy.env; set +a; exec python3
+    /config/scripts/vactidy_room.py --retries 6
+    --map 58757
+    --url http://192.168.5.250:8123/local/vactidy/cocina.txt
+    --auto
 
-  vactidy_parar:
-    - python3
-    - /config/scripts/vactidy_room.py
-    - --host
-    - "192.168.5.210"
-    - --device-id
-    - !secret vactidy_device_id
-    - --local-key
-    - !secret vactidy_local_key
-    - --retries
-    - "6"
-    - --stop-dock
+  vactidy_parar: >-
+    set -a; . /config/scripts/vactidy.env; set +a; exec python3
+    /config/scripts/vactidy_room.py --retries 6
+    --stop-dock
 
 script:
   limpiar_salon:

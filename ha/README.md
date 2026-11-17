@@ -37,17 +37,20 @@ Assistant (add-on *File editor*, Samba o la consola de Portainer): crea
 `config/scripts/vactidy_room.py` y `config/www/vactidy/salon.txt` y pega el
 contenido.
 
-### 2. Guardar las credenciales
+### 2. Credenciales
 
-En `secrets.yaml`:
+El instalador crea `/config/scripts/vactidy.env` (permisos 600) leyendo el
+device_id y la clave local de la propia integracion `tuya-local`, asi que la
+clave no se escribe a mano ni queda en el YAML:
 
-```yaml
-vactidy_device_id: bf3e20ee26fbdcffd8e8kl
-vactidy_local_key: "TU_CLAVE_LOCAL"
+```
+VACTIDY_HOST=192.168.5.210
+VACTIDY_DEVICE_ID=bf3e20ee26fbdcffd8e8kl
+VACTIDY_LOCAL_KEY=...
 ```
 
-La clave local es la misma que usa la integracion `tuya-local` (16 caracteres,
-se lee en *Cloud → API Explorer → Query device details*).
+`shell_command` carga ese fichero antes de ejecutar el script
+(`set -a; . /config/scripts/vactidy.env; set +a`).
 
 ### 3. Activar el paquete
 

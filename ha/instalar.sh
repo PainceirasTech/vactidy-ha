@@ -5,6 +5,7 @@ set -eu
 
 BASE="http://192.168.5.100:8002"
 CFG="/config"
+ENTORNO="$CFG/scripts/vactidy.env"
 
 echo "== 1. Carpetas =="
 mkdir -p "$CFG/scripts" "$CFG/www/vactidy" "$CFG/packages"
@@ -38,37 +39,28 @@ for entrada in datos["data"]["entries"]:
 if not clave:
     raise SystemExit("ERROR: no encuentro la clave local en la integracion tuya_local")
 
-pathlib.Path("/config/.vactidy_secrets").write_text(
-    f'vactidy_device_id: {dispositivo}\nvactidy_local_key: "{clave}"\n',
+destino = pathlib.Path("/config/scripts/vactidy.env")
+destino.write_text(
+    "# Credenciales del robot. No compartir este fichero.\n"
+    f"VACTIDY_HOST=192.168.5.210\n"
+    f"VACTIDY_DEVICE_ID={dispositivo}\n"
+    f"VACTIDY_LOCAL_KEY={clave}\n",
     encoding="utf-8",
 )
-print(f"   ok: dispositivo {dispositivo}, clave de {len(clave)} caracteres")
+destino.chmod(0o600)
+print(f"   ok: {destino} (dispositivo {dispositivo}, clave de {len(clave)} caracteres)")
 PY
 
-echo "== 4. Anadiendo las claves a secrets.yaml =="
-if [ -f "$CFG/secrets.yaml" ] && grep -q '^vactidy_local_key:' "$CFG/secrets.yaml"; then
-    echo "   ya estaban puestas, no toco secrets.yaml"
-else
-    if [ -f "$CFG/secrets.yaml" ]; then
-        cp "$CFG/secrets.yaml" "$CFG/secrets.yaml.bak-vactidy"
-    fi
-    printf '\n' >> "$CFG/secrets.yaml"
-    cat "$CFG/.vactidy_secrets" >> "$CFG/secrets.yaml"
-    rm -f "$CFG/.vactidy_secrets"
-    echo "   ok: secrets.yaml actualizado (copia en secrets.yaml.bak-vactidy)"
-fi
-
-echo "== 5. Activando el paquete en configuration.yaml =="
+echo "== 4. Activando el paquete en configuration.yaml =="
 if grep -q 'packages:' "$CFG/configuration.yaml"; then
-    echo "   AVISO: configuration.yaml ya define 'packages:'."
-    echo "          Revisa que ese include llegue a $CFG/packages/ y no hago nada mas."
+    echo "   ya estaba activado, no toco configuration.yaml"
 else
     cp "$CFG/configuration.yaml" "$CFG/configuration.yaml.bak-vactidy"
     printf '\n# Limpieza por mapa del Vactidy (anadido por instalar.sh)\nhomeassistant:\n  packages: !include_dir_named packages\n' >> "$CFG/configuration.yaml"
     echo "   ok: configuration.yaml actualizado (copia en configuration.yaml.bak-vactidy)"
 fi
 
-echo "== 6. Comprobando la configuracion =="
+echo "== 5. Comprobando la configuracion =="
 python3 -m homeassistant --script check_config -c "$CFG" >/tmp/check.log 2>&1 && \
     echo "   ok: configuracion valida" || {
         echo "   FALLO en la validacion, ultimas lineas:"
