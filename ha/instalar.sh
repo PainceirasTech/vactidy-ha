@@ -22,6 +22,7 @@ echo "== 3. Leyendo la clave local de tuya-local =="
 python3 - <<'PY'
 import json
 import pathlib
+import shlex
 
 almacen = pathlib.Path("/config/.storage/core.config_entries")
 datos = json.loads(almacen.read_text(encoding="utf-8"))
@@ -43,8 +44,8 @@ destino = pathlib.Path("/config/scripts/vactidy.env")
 destino.write_text(
     "# Credenciales del robot. No compartir este fichero.\n"
     f"VACTIDY_HOST=192.168.5.210\n"
-    f"VACTIDY_DEVICE_ID={dispositivo}\n"
-    f"VACTIDY_LOCAL_KEY={clave}\n",
+    f"VACTIDY_DEVICE_ID={shlex.quote(str(dispositivo))}\n"
+    f"VACTIDY_LOCAL_KEY={shlex.quote(clave)}\n",
     encoding="utf-8",
 )
 destino.chmod(0o600)

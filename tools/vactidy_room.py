@@ -356,6 +356,13 @@ async def _main() -> int:
     if not args.local_key:
         print("Falta la clave local (--local-key o VACTIDY_LOCAL_KEY)", file=sys.stderr)
         return 2
+    if len(args.local_key) != 16:
+        print(
+            f"La clave local debe tener 16 caracteres (tiene {len(args.local_key)}): "
+            "revisa comillas o espacios en el fichero de entorno",
+            file=sys.stderr,
+        )
+        return 2
 
     async with Robot(
         args.host, args.device_id, args.local_key, retries=args.retries
