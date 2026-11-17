@@ -1,0 +1,82 @@
+# Limpieza por mapa del Vactidy Cleanova W15 para Home Assistant.
+#
+# Instalacion (ver ha/README.md):
+#   1. Copiar tools/vactidy_room.py a /config/scripts/vactidy_room.py
+#   2. Copiar tools/maps/<mapa>.txt a /config/www/vactidy/
+#   3. Anadir las dos entradas `vactidy_device_id` y `vactidy_local_key` a secrets.yaml
+#   4. Incluir este fichero con `homeassistant: packages:` y reiniciar
+#
+# Cada mapa se sirve desde la propia instancia de Home Assistant, asi que no
+# depende de ningun PC encendido ni de la nube de Tuya.
+
+shell_command:
+  vactidy_limpiar_salon:
+    - python3
+    - /config/scripts/vactidy_room.py
+    - --host
+    - "192.168.5.210"
+    - --device-id
+    - !secret vactidy_device_id
+    - --local-key
+    - !secret vactidy_local_key
+    - --retries
+    - "8"
+    - --map
+    - "64542"
+    - --url
+    - "http://192.168.5.250:8123/local/vactidy/salon.txt"
+    - --auto
+
+  # Rellenar el mapId y el nombre del fichero cuando se capture el mapa de la
+  # cocina (ver ha/README.md, seccion "Capturar otro mapa").
+  # vactidy_limpiar_cocina:
+  #   - python3
+  #   - /config/scripts/vactidy_room.py
+  #   - --host
+  #   - "192.168.5.210"
+  #   - --device-id
+  #   - !secret vactidy_device_id
+  #   - --local-key
+  #   - !secret vactidy_local_key
+  #   - --retries
+  #   - "8"
+  #   - --map
+  #   - "00000"
+  #   - --url
+  #   - "http://192.168.5.250:8123/local/vactidy/cocina.txt"
+  #   - --auto
+
+  vactidy_parar:
+    - python3
+    - /config/scripts/vactidy_room.py
+    - --host
+    - "192.168.5.210"
+    - --device-id
+    - !secret vactidy_device_id
+    - --local-key
+    - !secret vactidy_local_key
+    - --retries
+    - "8"
+    - --stop-dock
+
+script:
+  limpiar_salon:
+    alias: Limpiar salon
+    icon: mdi:robot-vacuum
+    mode: single
+    sequence:
+      - action: shell_command.vactidy_limpiar_salon
+
+  # limpiar_cocina:
+  #   alias: Limpiar cocina
+  #   icon: mdi:robot-vacuum
+  #   mode: single
+  #   sequence:
+  #     - action: shell_command.vactidy_limpiar_cocina
+
+  vactidy_parar:
+    alias: Parar el robot y mandarlo a la base
+    icon: mdi:home-import-outline
+    mode: single
+    sequence:
+      - action: shell_command.vactidy_parar

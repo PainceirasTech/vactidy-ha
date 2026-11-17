@@ -27,3 +27,7 @@ token.txt
 # Salidas de pruebas
 *.log
 coverage.xml
+
+# Mapas del robot (contienen el plano de la casa, no se publican)
+tools/maps/*.txt
+tools/maps/*.bin
