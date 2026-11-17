@@ -1,5 +1,10 @@
 # Vactidy for Home Assistant
 
+> **Notice (November 2026):** this repository no longer ships a HACS integration.
+> The bundled integration was archived at v0.1.4; the robot is now driven by
+> [`tuya-local`](https://github.com/make-all/tuya-local), and this repository provides
+> **map switching and voice cleaning** (`ha/` and `tools/`).
+
 Local integration for **Vactidy** robot vacuums (and compatible Tuya-based models) that speak
 the Tuya 3.3 LAN protocol. No cloud, no account and no vendor dependency: Home Assistant
 talks to the robot directly over your own wifi.

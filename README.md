@@ -1,5 +1,10 @@
 # Vactidy para Home Assistant
 
+> **Aviso (noviembre 2026):** este repositorio ya no publica una integración HACS.
+> La integración propia quedó archivada en la v0.1.4; hoy el robot se controla con
+> [`tuya-local`](https://github.com/make-all/tuya-local) y este repositorio aporta
+> el **cambio de mapa y la limpieza por voz** (carpetas `ha/` y `tools/`).
+
 Integración local para robots aspiradores **Vactidy** (y modelos compatibles basados en Tuya)
 que hablan el protocolo LAN de Tuya 3.3. Sin nube, sin cuenta y sin depender del fabricante:
 Home Assistant se conecta directamente al robot por tu red wifi.

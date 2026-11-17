@@ -70,13 +70,20 @@ y `script.limpiar_salon`.
 
 Las acciones de tipo `script` se exponen a Alexa como escenas. Exponlas en la
 integracion de Alexa que uses (Nabu Casa o Alexa Smart Home) y en la app de
-Alexa apareceran como escenas:
+Alexa apareceran como escenas. **Comprobado en la practica**: no hace falta
+crear ninguna rutina y no hace falta decir «activa»:
 
-- «Alexa, activa Limpiar salón» → aplica el mapa del salón y limpia.
-- «Alexa, activa Parar el robot y mandarlo a la base» → pausa y vuelve a cargar.
+- «Alexa, limpia salon» → aplica el mapa del salon y limpia.
+- «Alexa, limpia cocina» → aplica el mapa de la cocina y limpia.
+- «Alexa, para el robot» → pausa y vuelve a cargar.
 
-Si prefieres una rutina con nombre natural, crea la rutina en la app de Alexa
-y que ejecute la escena.
+La app de Alexa en espanol no tiene una pestana «Escenas»: las escenas de hogar
+inteligente solo se ven dentro de *Rutinas → Anadir accion → Hogar inteligente →
+Escenas*. Aun asi, el reconocimiento por voz las resuelve directamente.
+
+Tras anadir o renombrar un script hay que pedir a Alexa que descubra
+dispositivos: app Alexa → *Dispositivos → + → Anadir dispositivo → Otro →
+Detectar dispositivos*.
 
 ## Mapas capturados
 

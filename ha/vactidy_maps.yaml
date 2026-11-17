@@ -44,7 +44,7 @@ script:
       - action: shell_command.vactidy_limpiar_cocina
 
   vactidy_parar:
-    alias: Parar el robot y mandarlo a la base
+    alias: Parar robot
     icon: mdi:home-import-outline
     mode: single
     sequence:

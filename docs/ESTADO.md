@@ -201,3 +201,33 @@ y comando de parada fiable (`--stop-dock`: pausa y luego recarga).
 `frida_spawn.py hook_v5.js 600` + aplicar el mapa en la app + `parse_map.py`.
 El hook necesita fijar el classloader de la SDK
 (`Java.classFactory.loader`) y engañar `AbsThingDevice.publishDps`.
+
+## 9. Estado final (17 de noviembre de 2026)
+
+Todo funciona en produccion sobre Home Assistant (`192.168.5.250:8123`,
+HA 2026.11.2 en Docker):
+
+| Pieza | Detalle |
+|---|---|
+| `script.limpiar_salon` | aplica mapa `64542` y limpia |
+| `script.limpiar_cocina` | aplica mapa `58757` y limpia |
+| `script.vactidy_parar` | pausa y vuelve a la base |
+| Mapas | `/config/www/vactidy/{salon,cocina}.txt` (servidos por HA) |
+| Credenciales | `/config/scripts/vactidy.env` (permisos 600, `shlex.quote`) |
+
+### Alexa
+
+No hace falta crear rutinas ni decir «activa»: **«Alexa, limpia salon»**
+funciona directamente. HA entrega los `script` como escenas
+(`Alexa.SceneController`) y el reconocimiento por voz las resuelve.
+
+La app de Alexa en espanol no tiene pestana «Escenas»; solo aparecen en
+*Rutinas → Anadir accion → Hogar inteligente → Escenas*.
+
+### Lecciones de la instalacion
+
+- `shell_command` exige **cadena**, no lista de argumentos. Si se define como
+  lista, cae el dominio entero y desaparecen todos los comandos del sistema.
+- La clave local puede contener caracteres de shell (`|`, `<`...): hay que
+  citarla al escribir ficheros de entorno, o `source` la rompe.
+- Los `script` se recargan sin reiniciar, pero Alexa necesita redescubrir.
