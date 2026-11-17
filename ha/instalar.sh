@@ -49,7 +49,9 @@ echo "== 4. Anadiendo las claves a secrets.yaml =="
 if [ -f "$CFG/secrets.yaml" ] && grep -q '^vactidy_local_key:' "$CFG/secrets.yaml"; then
     echo "   ya estaban puestas, no toco secrets.yaml"
 else
-    [ -f "$CFG/secrets.yaml" ] && cp "$CFG/secrets.yaml" "$CFG/secrets.yaml.bak-vactidy"
+    if [ -f "$CFG/secrets.yaml" ]; then
+        cp "$CFG/secrets.yaml" "$CFG/secrets.yaml.bak-vactidy"
+    fi
     printf '\n' >> "$CFG/secrets.yaml"
     cat "$CFG/.vactidy_secrets" >> "$CFG/secrets.yaml"
     rm -f "$CFG/.vactidy_secrets"
